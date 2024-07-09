@@ -46,7 +46,9 @@ public class SecurityConfiguration  {
                         .requestMatchers("/barche/boats/{id}").hasRole("ADMIN")
                         // Richiedi autenticazione per tutte le altre rotte delle barche
                         .requestMatchers("/barche/**").authenticated()
-                        .requestMatchers("/Reservation/allReservation").hasRole("ADMIN")
+                        // Rotte per reservation
+                        .requestMatchers("/Reservation/**").authenticated()
+                        .requestMatchers("/Reservation/delete/{id}").hasRole("ADMIN")
 
                         // tutte le altre rotte richiedono l'autenticazione dell'utente tramite Token JWT
                         .requestMatchers("/api/**").authenticated() // Richiedi autenticazione per tutte le altre rotte API

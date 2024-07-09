@@ -40,9 +40,6 @@ public class ReservationController {
         }
     }
 
-
-
-
     @GetMapping("/allReservation")
     public ResponseEntity<List<Reservation>> getAllReservation() {
         List<Reservation> reservations = reservationService.getAllReservation();
