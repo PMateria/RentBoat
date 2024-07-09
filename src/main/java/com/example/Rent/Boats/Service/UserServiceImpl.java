@@ -1,8 +1,12 @@
 package com.example.Rent.Boats.Service;
 
+import com.example.Rent.Boats.Entity.Reservation;
 import com.example.Rent.Boats.Entity.User;
+import com.example.Rent.Boats.Repository.ReservationRepository;
 import com.example.Rent.Boats.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,11 +21,13 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final ReservationRepository reservationRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ReservationRepository reservationRepository) {
         this.userRepository = userRepository;
+        this.reservationRepository = reservationRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
@@ -70,12 +76,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void deleteUserById(Long id) {
+    public ResponseEntity<String
+            > deleteUserById(Long id) {
+        List<Reservation> reservations = reservationRepository.findByUserId(id);
+        if (!reservations.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Impossibile eliminare l'utente: ci sono prenotazioni associate.");
+        }
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             userRepository.delete(userOptional.get());
+            return ResponseEntity.ok("Utente eliminato con successo.");
         } else {
-            throw new IllegalArgumentException("Utente non trovato con ID: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Utente non trovato con ID: " + id);
         }
     }
 

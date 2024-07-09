@@ -70,7 +70,7 @@ public class BoatService {
         if (boatOptional.isPresent()) {
             boatRepository.delete(boatOptional.get());
         } else {
-            throw new IllegalArgumentException("Utente non trovato con ID: " + id);
+            throw new IllegalArgumentException("Barca non trovato con ID: " + id);
         }
     }
 

@@ -35,18 +35,21 @@ public class User implements UserDetails {
     @Column(name="iban")
     private String iban;
 
+    @Column(name="role")
+    private String role;
 
     public User() {}
 
-    public User(Long id, String name, String surname, String numPersons, String username, String password, String iban, String email) {
+    public User(Long id, String name, String surname, String numPersons, String username, String email, String password, String iban, String role) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.numPersons = numPersons;
         this.username = username;
+        this.email = email;
         this.password = password;
         this.iban = iban;
-        this.email= email;
+        this.role = role;
     }
 
     public Long getId() {
@@ -81,6 +84,7 @@ public class User implements UserDetails {
         this.numPersons = numPersons;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -89,6 +93,15 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }
@@ -105,16 +118,17 @@ public class User implements UserDetails {
         this.iban = iban;
     }
 
-    public String getEmail() {
-        return email;
+    public String getRole() {
+        return role;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setRole(String role) {
+        this.role = role;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role));
     }
 
     @Override

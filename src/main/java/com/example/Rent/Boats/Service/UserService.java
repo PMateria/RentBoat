@@ -1,6 +1,7 @@
 package com.example.Rent.Boats.Service;
 
 import com.example.Rent.Boats.Entity.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    void deleteUserById(Long id);
+    ResponseEntity<String> deleteUserById(Long id);
 
     UserDetails loadUserByUsername(String username);
 }

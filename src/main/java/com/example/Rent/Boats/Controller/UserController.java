@@ -8,15 +8,19 @@ package com.example.Rent.Boats.Controller;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.security.core.Authentication;
+    import org.springframework.security.core.GrantedAuthority;
+    import org.springframework.security.core.authority.SimpleGrantedAuthority;
     import org.springframework.security.core.context.SecurityContextHolder;
     import org.springframework.security.core.userdetails.UserDetails;
     import org.springframework.web.bind.annotation.*;
 
+    import java.util.ArrayList;
     import java.util.List;
     import java.util.Optional;
     import java.util.stream.Collectors;
 
-    @RestController
+
+@RestController
     @RequestMapping("/api")
     public class UserController {
         private final UserService userService;
@@ -43,9 +47,12 @@ package com.example.Rent.Boats.Controller;
         public ResponseEntity<String> loginUser(@RequestBody User user) {
             Optional<User> loggedInUser = userService.login(user.getUsername(), user.getPassword());
             if (loggedInUser.isPresent()) {
-                // Genera un token JWT reale
-                UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+
+                List<GrantedAuthority> aut = new ArrayList<GrantedAuthority>();
+                aut.add(new SimpleGrantedAuthority("ROLE_" + loggedInUser.get().getRole()));
+                org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(loggedInUser.get().getUsername(),loggedInUser.get().getPassword(),aut);
                 String token = jwtService.generateToken(userDetails);
+                System.out.println("Generated token: " + token);
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(401).body("Username o password errati");
@@ -64,13 +71,8 @@ package com.example.Rent.Boats.Controller;
             }
         }
 
-        @DeleteMapping("/{id}")
-        public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
-            try {
-                userService.deleteUserById(id);
-                return ResponseEntity.ok("Utente cancellato con successo");
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.status(404).body(e.getMessage());
-            }
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id) {
+        return userService.deleteUserById(id);
+    }
     }

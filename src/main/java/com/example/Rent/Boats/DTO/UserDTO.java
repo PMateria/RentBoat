@@ -7,7 +7,7 @@ public class UserDTO {
     private String username;
     private String email;
     // Aggiungi altri campi se necessario
-
+    private String role;
     public UserDTO() {
         // Costruttore vuoto necessario per deserializzazione JSON
     }
