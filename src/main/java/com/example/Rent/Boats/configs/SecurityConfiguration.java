@@ -36,20 +36,14 @@ public class SecurityConfiguration  {
                 .csrf(csrf -> csrf.disable()) // Disabilita CSRF per le API RESTful
                 .cors(withDefaults()) // Abilita le configurazioni CORS definite sotto
                 .authorizeHttpRequests((requests) -> requests
-                        //rotte per utente
                         .requestMatchers("/api/register", "/api/login").permitAll() // Permetti l'accesso a /api/register e /api/login senza autenticazione
                         .requestMatchers("/api/utenti").authenticated() // Richiede autenticazione per /api/utenti
-                        //accesso solo a ruoli ADMIN
                         .requestMatchers("/api/{id}").hasRole("ADMIN")
-                        // rotte per barche accesso solo a ruoli ADMIN
                         .requestMatchers("/barche/addBoats").hasRole("ADMIN")
                         .requestMatchers("/barche/boats/{id}").hasRole("ADMIN")
-                        // Richiedi autenticazione per tutte le altre rotte delle barche
                         .requestMatchers("/barche/**").authenticated()
-                        // Rotte per reservation
                         .requestMatchers("/Reservation/**").authenticated()
                         .requestMatchers("/Reservation/delete/{id}").hasRole("ADMIN")
-
                         // tutte le altre rotte richiedono l'autenticazione dell'utente tramite Token JWT
                         .requestMatchers("/api/**").authenticated() // Richiedi autenticazione per tutte le altre rotte API
                         .anyRequest().authenticated() // Richiedi autenticazione per tutte le altre richieste
@@ -67,7 +61,7 @@ public class SecurityConfiguration  {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
         configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
