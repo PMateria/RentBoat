@@ -1,61 +1,27 @@
-async function getUsers() {
-    try {
-        const response = await fetch('http://localhost:8080/api/utenti', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error('Errore nel recupero degli utenti');
-        }
-
-        const users = await response.json();
-        const userList = document.getElementById('user-list');
-        userList.innerHTML = '';
-
-        users.forEach(user => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `ID: ${user.id}, Username: ${user.username}, Email: ${user.email}`;
-            userList.appendChild(listItem);
-        });
-
-    } catch (error) {
-        console.error('Errore durante il recupero degli utenti:', error);
-    }
-}
-
-async function deleteUser() {
-    const userId = document.getElementById('delete-user-id').value;
-
-    if (!userId) {
-        alert('Inserisci un ID utente valido');
+function checkUserRole() {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+        console.error('Token JWT non trovato nel localStorage');
+        // Gestire il caso in cui il token non è presente (reindirizza o mostra un messaggio di errore)
         return;
     }
 
-    try {
-        const response = await fetch(`http://localhost:8080/api/${userId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
+    // Decodifica il payload del JWT
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const decodedToken = JSON.parse(atob(base64));
 
-        console.log('Response:', response); // Log della risposta
+    // Recupera il ruolo dall'oggetto decodificato
+    const roles = decodedToken.roles;
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Errore nella risposta:', errorData); // Log dell'errore
-            throw new Error('Errore nella cancellazione dell\'utente');
-        }
-
-        const data = await response.json();
-        console.log('Dati:', data);
-
-        document.getElementById('delete-message').textContent = 'Utente eliminato con successo';
-    } catch (error) {
-        console.error('Errore durante la cancellazione dell\'utente:', error);
-        document.getElementById('delete-message').textContent = 'Errore nella cancellazione dell\'utente. Riprova.';
+    // Mostra o nascondi le card in base al ruolo
+    if (roles === 'ROLE_Admin') { // Verifica se l'utente ha il ruolo amministratore
+        document.getElementById('get-users-card').style.display = 'block';
+        document.getElementById('delete-user-card').style.display = 'block';
+        document.getElementById('error-message').style.display = 'none'; // Nascondi eventuali messaggi di errore
+    } else {
+        document.getElementById('get-users-card').style.display = 'none';
+        document.getElementById('delete-user-card').style.display = 'none';
+        document.getElementById('error-message').style.display = 'block'; // Mostra un messaggio di errore generico
     }
 }

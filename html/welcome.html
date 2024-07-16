@@ -13,19 +13,23 @@
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK5l_ofu2N0NV4bKyeyT34u-0fgerynz-xWg&s" alt="RentBoat Image">
         
         <div class="card-container">
-            <div class="card">
+            <div class="card" id="get-users-card">
                 <h3>Get Users</h3>
                 <p>Retrieve the list of all users registered in the system.</p>
                 <button onclick="getUsers()">Get Users</button>
                 <ul id="user-list"></ul>
             </div>
-            <div class="card">
+            <div class="card" id="delete-user-card">
                 <h3>Delete User</h3>
                 <p>Delete a user by their ID.</p>
                 <input type="number" id="delete-user-id" placeholder="User ID">
                 <button onclick="deleteUser()">Delete User</button>
                 <p id="delete-message"></p>
             </div>
+        </div>
+
+        <div id="error-message" style="display: none;">
+            <p>You do not have the necessary permissions to view this section.</p>
         </div>
     </div>
 

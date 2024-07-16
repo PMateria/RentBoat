@@ -21,7 +21,9 @@ loginForm.addEventListener('submit', async function(event) {
     }
 
     const token = await response.text();
-
+    console.log("token")
+    console.log(token)
+    
     if (token.startsWith('eyJ')) {
       loginMessage.textContent = 'Login riuscito!';
       localStorage.setItem('jwtToken', token);
