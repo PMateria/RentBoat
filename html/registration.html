@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="registration-container">
+    <h2>Registration</h2>
+    <form id="registration-form">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div>
+        <label for="surname">Surname:</label>
+        <input type="text" id="surname" name="surname" required>
+      </div>
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div>
+        <label for="iban">IBAN:</label>
+        <input type="text" id="iban" name="iban" required>
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <input type="hidden" id="role" name="role" value="ADMIN"> <!-- Default role as "admin" -->
+      <button type="submit">Register</button>
+    </form>
+    <p id="registration-message"></p>
+  </div>
+
+  <script src="../js/registration-script.js"></script>
+</body>
+</html>
