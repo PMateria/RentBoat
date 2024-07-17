@@ -6,6 +6,11 @@
     <title>Welcome to RentBoat</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../css/welcome.css">
+    <style>
+        .card {
+            display: none; /* Nasconde le card per impostazione predefinita */
+        }
+    </style>
 </head>
 <body>
     <div class="welcome-container">
@@ -16,14 +21,14 @@
             <div class="card" id="get-users-card">
                 <h3>Get Users</h3>
                 <p>Retrieve the list of all users registered in the system.</p>
-                <button onclick="getUsers()">Get Users</button>
+                <button id="get-users-button">Get Users</button>
                 <ul id="user-list"></ul>
             </div>
             <div class="card" id="delete-user-card">
                 <h3>Delete User</h3>
                 <p>Delete a user by their ID.</p>
                 <input type="number" id="delete-user-id" placeholder="User ID">
-                <button onclick="deleteUser()">Delete User</button>
+                <button id="delete-user-button">Delete User</button>
                 <p id="delete-message"></p>
             </div>
         </div>

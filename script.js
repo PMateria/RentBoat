@@ -1,39 +1,54 @@
-const loginForm = document.getElementById('login-form');
-const loginMessage = document.getElementById('login-message');
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('http://localhost:8080/barche/allBoats')
+    .then(response => response.json())
+    .then(data => {
+      const boatsList = document.getElementById('boats-list');
+      data.forEach(boat => {
+        const boatCard = document.createElement('div');
+        boatCard.className = 'boat-card';
 
-loginForm.addEventListener('submit', async function(event) {
-  event.preventDefault();
+        const boatImage = document.createElement('img');
+        boatImage.src = boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
+        boatImage.alt = boat.name;
+        boatImage.className = 'boat-image';
 
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
+        const boatDetails = document.createElement('div');
+        boatDetails.className = 'boat-details';
 
-  try {
-    const response = await fetch('http://localhost:8080/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+        const boatName = document.createElement('h2');
+        boatName.textContent = boat.name;
 
-    if (!response.ok) {
-      throw new Error('Errore nel login');
-    }
+        const boatDescription = document.createElement('p');
+        boatDescription.textContent = boat.description;
 
-    const token = await response.text();
-    console.log("token")
-    console.log(token)
-    
-    if (token.startsWith('eyJ')) {
-      loginMessage.textContent = 'Login riuscito!';
-      localStorage.setItem('jwtToken', token);
-      window.location.href = 'html/welcome.html'; // Reindirizzamento dopo il login
-    } else {
-      throw new Error('Token JWT non valido');
-    }
+        const boatPrice = document.createElement('p');
+        boatPrice.className = 'boat-price';
+        boatPrice.textContent = `Price: ${boat.price} EUR`;
 
-  } catch (error) {
-    console.error('Errore durante il login:', error);
-    loginMessage.textContent = 'Credenziali non valide. Riprova.';
-  }
+        const flags = document.createElement('div');
+        flags.className = 'flags';
+
+        const redFlag = document.createElement('button');
+        redFlag.className = 'flag green-flag';
+        redFlag.textContent = 'Affitta';
+
+        const greenFlag = document.createElement('button');
+        greenFlag.className = 'flag green-flag';
+        greenFlag.textContent = 'Aggiungi al carrello';
+
+        flags.appendChild(redFlag);
+        flags.appendChild(greenFlag);
+
+        boatDetails.appendChild(boatName);
+        boatDetails.appendChild(boatDescription);
+        boatDetails.appendChild(boatPrice);
+        boatDetails.appendChild(flags);
+
+        boatCard.appendChild(boatImage);
+        boatCard.appendChild(boatDetails);
+
+        boatsList.appendChild(boatCard);
+      });
+    })
+    .catch(error => console.error('Error fetching boats:', error));
 });
