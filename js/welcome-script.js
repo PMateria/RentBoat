@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const getUsersCard = document.getElementById('get-users-card');
     const deleteUserCard = document.getElementById('delete-user-card');
 
-    const token = localStorage.getItem('jwtToken');
+    const token = sessionStorage.getItem('jwtToken');
     if (!token) {
-        console.error('Token JWT non trovato nel localStorage.');
+        console.error('Token JWT non trovato nel sessionStorage.');
         return;
     }
 

@@ -66,3 +66,28 @@ body {
     color: #333;
   }
   
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: none;
+  }
+  
+  .popup.success {
+    background-color: #28a745; /* verde per successo */
+  }
+  
+  .popup.error {
+    background-color: #dc3545; /* rosso per errore */
+  }
+  
+  .popup.show {
+    display: block;
+  }
+  
