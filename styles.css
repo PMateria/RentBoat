@@ -93,3 +93,97 @@ main {
 .green-flag {
   background-color: #4CAF50;
 }
+
+#reservations-list {
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-height: 200px; /* Imposta un'altezza minima per garantire che l'elemento sia visibile */
+  margin-top: 20px; /* Aggiungi un margine superiore se necessario */
+}
+
+/* Stili per le card delle prenotazioni */
+.reservation-card {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
+  padding: 16px;
+  transition: transform 0.2s;
+}
+
+.reservation-card:hover {
+  transform: scale(1.02);
+}
+
+.reservation-image {
+  width: 150px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+
+.reservation-details {
+  flex: 1;
+}
+
+.reservation-details p {
+  margin: 4px 0;
+}
+
+/* Stili per le card delle barche */
+.boat-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 16px;
+  padding: 16px;
+  transition: transform 0.2s;
+}
+
+.boat-card:hover {
+  transform: scale(1.02);
+}
+
+.boat-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.boat-details {
+  padding: 16px 0;
+}
+
+.boat-price {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.flags {
+  display: flex;
+  gap: 8px;
+}
+
+.flag {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.green-flag {
+  background-color: #28a745;
+}
+
+.green-flag:hover {
+  background-color: #218838;
+}
