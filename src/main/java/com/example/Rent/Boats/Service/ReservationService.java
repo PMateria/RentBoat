@@ -93,8 +93,8 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public Optional<Reservation> getBoatById(Long id) {
-        return reservationRepository.findById(id);
+    public List<Reservation> getReservationsByBoatId(Long boatId) {
+        return reservationRepository.findByBoatId(boatId);
     }
 
 

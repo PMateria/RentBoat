@@ -25,20 +25,20 @@ public class ReservationController {
         this.reservationService = reservationService;
     }
 
-    @PostMapping("/addReservation")
-    public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequest request) {
-        try {
-            Reservation reservation = reservationService.addReservation(
-                    request.getBoatId(),
-                    request.getUserId(),
-                    request.getStartDate(),
-                    request.getEndDate()
-            );
-            return ResponseEntity.ok(reservation);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        @PostMapping("/addReservation")
+        public ResponseEntity<Reservation> addReservation(@RequestBody ReservationRequest request) {
+            try {
+                Reservation reservation = reservationService.addReservation(
+                        request.getBoatId(),
+                        request.getUserId(),
+                        request.getStartDate(),
+                        request.getEndDate()
+                );
+                return ResponseEntity.ok(reservation);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().build();
+            }
         }
-    }
 
     @GetMapping("/allReservation")
     public ResponseEntity<List<Reservation>> getAllReservation() {
@@ -62,12 +62,15 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getBoatById(@PathVariable Long id) {
-        Optional<Reservation> reservationOptional = reservationService.getBoatById(id);
-        return reservationOptional.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @GetMapping("/byBoatId/{boatId}")
+    public ResponseEntity<List<Reservation>> getReservationsByBoatId(@PathVariable("boatId") Long boatId) {
+        List<Reservation> reservations = reservationService.getReservationsByBoatId(boatId);
+        if (reservations.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(reservations);
     }
+
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<String> deleteReservationById(@PathVariable Long id) {
