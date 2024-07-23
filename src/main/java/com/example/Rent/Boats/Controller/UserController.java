@@ -3,6 +3,7 @@ package com.example.Rent.Boats.Controller;
     import com.example.Rent.Boats.DTO.UserDTO;
     import com.example.Rent.Boats.Entity.User;
     import com.example.Rent.Boats.Service.JwtService;
+    import com.example.Rent.Boats.Service.LoginResponse;
     import com.example.Rent.Boats.Service.UserService;
     import org.slf4j.Logger;
     import org.slf4j.LoggerFactory;
@@ -48,20 +49,22 @@ package com.example.Rent.Boats.Controller;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody User user) {
         Optional<User> loggedInUser = userService.login(user.getUsername(), user.getPassword());
         if (loggedInUser.isPresent()) {
-
-            List<GrantedAuthority> aut = new ArrayList<GrantedAuthority>();
+            List<GrantedAuthority> aut = new ArrayList<>();
             aut.add(new SimpleGrantedAuthority("ROLE_" + loggedInUser.get().getRole()));
             org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(loggedInUser.get().getUsername(), loggedInUser.get().getPassword(), aut);
             String token = jwtService.generateToken(userDetails);
             System.out.println("Generated token: " + token);
-            return ResponseEntity.ok(token);
+
+            LoginResponse loginResponse = new LoginResponse(token, loggedInUser.get().getId());
+            return ResponseEntity.ok(loginResponse);
         } else {
-            return ResponseEntity.status(401).body("Username o password errati");
+            return ResponseEntity.status(401).body(null);
         }
     }
+
 
     @GetMapping("/utenti")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
