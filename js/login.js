@@ -22,11 +22,12 @@ loginForm.addEventListener('submit', async function(event) {
             throw new Error('Credenziali non valide. Riprova.');
         }
 
-        const token = await response.text();
+        const data = await response.json();
         
-        if (token.startsWith('eyJ')) {
+        if (data.token && data.token.startsWith('eyJ')) {
             loginMessage.textContent = 'Login riuscito!';
-            sessionStorage.setItem('jwtToken', token);
+            sessionStorage.setItem('jwtToken', data.token);
+            sessionStorage.setItem('userId', data.userId);
 
             setTimeout(() => {
                 window.location.href = '../index.html';
