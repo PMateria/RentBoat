@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Aggiungi stile per il pulsante di eliminazione */
+        .delete-button, .delete-boat-button {
+            color: red;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            text-decoration: underline;
+        }
+        .boat-card, .user-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        /* Stile per la navbar */
+        #navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 5px 0; /* Ridotto per altezza più bassa */
+        }
+        #navbar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Allinea verticalmente il contenuto */
+        }
+        #navbar li {
+            margin: 0 10px;
+        }
+        #navbar a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px; /* Ridotto per altezza più bassa */
+            display: inline-block;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 14px; /* Ridotto per altezza più bassa */
+        }
+        #navbar a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav id="navbar">
+            <ul>
+                <div class="left" id="left-nav">
+                    <!-- Aggiungi il pulsante Home nella navbar -->
+                </div>
+                <div class="right" id="right-nav">
+                    <!-- Sezione destra della navbar -->
+                </div>
+            </ul>
+        </nav>
+    </header>
+   
+    <main>
+        <h1>Admin Dashboard</h1>
+        <div id="adminContent">
+            <div class="section">
+                <h2>Aggiungi una nuova barca</h2>
+                <form id="addBoatForm">
+                    <!-- Form per aggiungere una barca -->
+                    <input type="text" name="name" placeholder="Nome" required>
+                    <input type="text" name="description" placeholder="Descrizione" required>
+                    <input type="number" name="places" placeholder="Posti" required>
+                    <input type="number" name="price" placeholder="Prezzo" required>
+                    <select name="available" required>
+                        <option value="true">Disponibile</option>
+                        <option value="false">Non disponibile</option>
+                    </select>
+                    <button type="submit">Aggiungi Barca</button>
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>Lista Barche</h2>
+                <div id="boats-list">
+                    <!-- La lista delle barche verrà inserita qui -->
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Lista Utenti</h2>
+                <div id="users-list">
+                    <!-- La lista degli utenti verrà inserita qui -->
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Lista Prenotazioni</h2>
+                <div id="reservations-list">
+                    <!-- La lista delle prenotazioni verrà inserita qui -->
+                </div>
+            </div>
+            
+        </div>
+    </main>
+   
+    <!-- Inclusione degli script -->
+    <script src="../script.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

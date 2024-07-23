@@ -2,271 +2,315 @@ document.addEventListener('DOMContentLoaded', async () => {
   const leftNav = document.getElementById('left-nav');
   const rightNav = document.getElementById('right-nav');
 
-  let userId = null; // Dichiarata come variabile let
   let jwtToken = sessionStorage.getItem('jwtToken');
+  let selectedBoatId = sessionStorage.getItem('selectedBoatId'); // Retrieve selectedBoatId from sessionStorage
+  let userId= sessionStorage.getItem('userId')
 
+  console.log("userId", userId)
   if (jwtToken) {
-    try {
-      const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-      console.log('Payload:', payload);
-      
-      userId = payload.sub; // Estrai l'ID utente dal campo 'sub'
-      console.log('User ID:', userId);
+      try {
+          const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+          console.log('Payload:', payload);
+          
+          userId = payload.sub;
+          console.log('User ID:', userId);
 
-      const roles = payload.roles;
+          const roles = payload.roles;
 
-      if (window.location.pathname.includes('html/cart.html')) {
-        await fetchReservations();
-      } else {
-        // Altrimenti, carichiamo le barche (se siamo nella pagina principale)
-        await loadBoats();
+          if (window.location.pathname.includes('html/cart.html')) {
+              if (jwtToken) {
+                  await fetchReservations(); // Carica le prenotazioni se l'utente è loggato
+              } else {
+                  console.error('Token JWT non trovato');
+              }
+          } else {
+              await loadBoats();
+          }
+
+
+
+          // Aggiungi pulsante Carrello
+          const cartLink = document.createElement('li');
+          cartLink.innerHTML = '<a href="/html/cart.html" id="cart-link">Carrello</a>'; // Use absolute path
+          leftNav.appendChild(cartLink);
+
+          const cartButton = document.getElementById('cart-link');
+          cartButton.addEventListener('click', handleCartButtonClick);
+
+          // Aggiungi pulsante Logout
+          const logoutLink = document.createElement('li');
+          logoutLink.innerHTML = '<a href="#" id="logout-link">Logout</a>';
+          rightNav.appendChild(logoutLink);
+
+          const logoutButton = document.getElementById('logout-link');
+          logoutButton.addEventListener('click', handleLogoutButtonClick);
+
+          
+          // Aggiungi pulsante Admin se l'utente ha il ruolo di amministratore
+          if (roles && roles.includes('ROLE_ADMIN')) {
+              const adminLink = document.createElement('li');
+              adminLink.innerHTML = '<a href="/html/admin.html">ADMIN</a>';
+              rightNav.appendChild(adminLink);
+          }
+      } catch (error) {
+          console.error('Errore nel parsing del token JWT:', error);
       }
-
-      // Mostra il link del carrello nel leftNav
-      const cartLink = document.createElement('li');
-      cartLink.innerHTML = '<a href="cart.html" id="cart-link">Carrello</a>';
-      leftNav.appendChild(cartLink);
-
-      // Gestione del click sul link del carrello
-      const cartButton = document.getElementById('cart-link');
-      cartButton.addEventListener('click', handleCartButtonClick);
-
-      // Mostra il link di logout nel rightNav
-      const logoutLink = document.createElement('li');
-      logoutLink.innerHTML = '<a href="#" id="logout-link">Logout</a>';
-      rightNav.appendChild(logoutLink);
-
-      // Gestione del click sul link di logout
-      const logoutButton = document.getElementById('logout-link');
-      logoutButton.addEventListener('click', handleLogoutButtonClick);
-
-      if (roles && roles.includes('ROLE_ADMIN')) {
-        // Se l'utente è admin, mostra il link admin nel rightNav
-        const adminLink = document.createElement('li');
-        adminLink.innerHTML = '<a href="#admin">ADMIN</a>';
-        rightNav.appendChild(adminLink);
-      }
-    } catch (error) {
-      console.error('Errore nel parsing del token JWT:', error);
-    }
   } else {
-    // Mostra i link di login e registrazione se l'utente non è autenticato
-    appendLoginAndRegistrationLinks();
+      appendLoginAndRegistrationLinks();
   }
 
-  // Funzione per caricare e visualizzare la lista delle barche
-  await loadBoats();
-
-  function handleCartButtonClick() {
-    fetchReservations();
+  // Call loadBoats function to populate boat list if not on the cart page
+  if (!window.location.pathname.includes('html/cart.html')) {
+      await loadBoats();
   }
+
+  function handleCartButtonClick(event) {
+      event.preventDefault(); // Prevent default link behavior
+      window.location.href = '/html/cart.html'; // Redirect to cart page
+  }
+
+  async function addToCart() {
+    try {
+        console.log('Current Boat ID from sessionStorage:', selectedBoatId);
+
+        if (!selectedBoatId) {
+            console.error('Boat ID non disponibile');
+            return;
+        }
+
+        if (!jwtToken) {
+            throw new Error('Token JWT non trovato in sessione');
+        }
+
+        console.log('Adding to cart with Boat ID:', selectedBoatId);
+
+        const reservationDate = new Date().toISOString().slice(0, 10);
+        const startDate = new Date().toISOString();
+        const endDate = new Date(new Date().setHours(new Date().getHours() + 2)).toISOString();
+
+        const requestBody = {
+            boatId: selectedBoatId,
+            userId: sessionStorage.getItem('userId'),
+            reservationDate: reservationDate,
+            startDate: startDate,
+            endDate: endDate
+        };
+        
+        console.log("requestBody.userId", userId)
+
+        const response = await fetch('http://localhost:8080/Reservation/addReservation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        console.log("Response status:", response.status);
+        console.log("Response headers:", response.headers);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Response error text:', errorText);
+            throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}\n${errorText}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Server response:', responseData);
+
+        sessionStorage.setItem('selectedBoatId', selectedBoatId);
+
+        console.log('Barca aggiunta al carrello!');
+        alert('Barca aggiunta al carrello!');
+        window.location.href = '/html/cart.html';
+    } catch (error) {
+        console.error('Errore dettagliato durante l\'aggiunta al carrello:', error);
+        alert(`Errore durante l'aggiunta al carrello: ${error.message}`);
+    }
+}
   
   async function fetchReservations() {
-    selectedBoatId= boat.id;
-    try {
-      console.log("selectedBoatId", selectedBoatId)
-      if (!selectedBoatId) {
-        console.error('Boat ID non disponibile');
-        return;
+      try {
+          if (!selectedBoatId) {
+              console.error('Boat ID non disponibile');
+              return;
+          }
+
+          const response = await fetch(`http://localhost:8080/Reservation/byBoatId/${selectedBoatId}`, {
+              headers: {
+                  Authorization: `Bearer ${jwtToken}`
+              }
+          });
+
+          if (!response.ok) {
+              throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          console.log('Prenotazioni effettuate:', data);
+
+          renderReservations(data);
+      } catch (error) {
+          console.error('Errore durante il recupero delle prenotazioni:', error);
       }
-  
-      const response = await fetch(`http://localhost:8080/Reservation/byBoatId/${selectedBoatId}`, {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`
-        }
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      console.log('Prenotazioni effettuate:', data);
-  
-      // Verifica se data è un array e contiene elementi
-      if (Array.isArray(data) && data.length > 0) {
-        // Accedi ai dati della prima prenotazione (se ce ne sono più di una)
-        data.forEach(reservation => {
-          console.log("Boat ID:", reservation.boat.id);
-          console.log("User ID:", reservation.user.id);
-        });
-      } else if (data.boat && data.user) {
-        // Se data non è un array ma contiene direttamente i dati della prenotazione
-        console.log("Boat ID:", data.boat.id);
-        console.log("User ID:", data.user.id);
-      } else {
-        console.log("Struttura dati non riconosciuta:", data);
-      }
-  
-      renderReservations(data);
-    } catch (error) {
-      console.error('Errore durante il recupero delle prenotazioni:', error);
-    }
   }
-  
 
   function renderReservations(reservations) {
-    const reservationList = document.getElementById('reservations-list');
+      const reservationList = document.getElementById('reservations-list');
 
-    if (!reservationList) {
-      console.error('Elemento con ID "reservations-list" non trovato');
-      return;
-    }
-    reservationList.innerHTML = '';
+      if (!reservationList) {
+          console.error('Elemento con ID "reservations-list" non trovato');
+          return;
+      }
+      reservationList.innerHTML = '';
 
-    const reservationsArray = Array.isArray(reservations) ? reservations : [reservations];
+      const reservationsArray = Array.isArray(reservations) ? reservations : [reservations];
 
-    reservationsArray.forEach(reservation => {
-      const reservationCard = document.createElement('div');
-      reservationCard.className = 'reservation-card';
+      reservationsArray.forEach(reservation => {
+          const reservationCard = document.createElement('div');
+          reservationCard.className = 'reservation-card';
 
-      const reservationImage = document.createElement('img');
-      reservationImage.src = reservation.boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
-      reservationImage.alt = reservation.boat.name;
-      reservationImage.className = 'reservation-image';
+          const reservationImage = document.createElement('img');
+          reservationImage.src = reservation.boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
+          reservationImage.alt = reservation.boat.name;
+          reservationImage.className = 'reservation-image';
 
-      const reservationDetails = document.createElement('div');
-      reservationDetails.className = 'reservation-details';
+          const reservationDetails = document.createElement('div');
+          reservationDetails.className = 'reservation-details';
 
-      const reservationInfo = document.createElement('p');
-      reservationInfo.textContent = `Barca: ${reservation.boat.name}, Data prenotazione: ${reservation.reservationDate}, Inizio: ${reservation.startDate}, Fine: ${reservation.endDate}`;
+          const reservationInfo = document.createElement('p');
+          reservationInfo.textContent = `Barca: ${reservation.boat.name}, Data prenotazione: ${reservation.reservationDate}, Inizio: ${reservation.startDate}, Fine: ${reservation.endDate}`;
 
-      reservationDetails.appendChild(reservationInfo);
-      reservationCard.appendChild(reservationImage);
-      reservationCard.appendChild(reservationDetails);
+          reservationDetails.appendChild(reservationInfo);
+          reservationCard.appendChild(reservationImage);
+          reservationCard.appendChild(reservationDetails);
 
-      reservationList.appendChild(reservationCard);
-    });
+          reservationList.appendChild(reservationCard);
+      });
   }
 
   function handleLogoutButtonClick() {
-    sessionStorage.removeItem('jwtToken');
-    window.location.href = 'index.html';
+      sessionStorage.removeItem('jwtToken');
+      sessionStorage.removeItem('selectedBoatId');
+      window.location.href = '/index.html'; // Assicurati che il percorso sia corretto
   }
 
   function appendLoginAndRegistrationLinks() {
-    const loginLink = document.createElement('li');
-    loginLink.innerHTML = '<a href="html/login.html">Login</a>';
-    leftNav.appendChild(loginLink);
+      const loginLink = document.createElement('li');
+      loginLink.innerHTML = '<a href="/html/login.html">Login</a>'; // Use absolute path
+      leftNav.appendChild(loginLink);
 
-    const registrationLink = document.createElement('li');
-    registrationLink.innerHTML = '<a href="html/registration.html">Registrazione</a>';
-    leftNav.appendChild(registrationLink);
+      const registrationLink = document.createElement('li');
+      registrationLink.innerHTML = '<a href="/html/registration.html">Registrazione</a>'; // Use absolute path
+      leftNav.appendChild(registrationLink);
   }
 
-  // Funzione per caricare e visualizzare la lista delle barche
   async function loadBoats() {
-    try {
-      const response = await fetch('http://localhost:8080/barche/allBoats');
-      if (!response.ok) {
-        throw new Error('Errore nel recupero delle barche');
+      try {
+          const response = await fetch('http://localhost:8080/barche/allBoats');
+          if (!response.ok) {
+              throw new Error('Errore nel recupero delle barche');
+          }
+          const data = await response.json();
+          renderBoats(data);
+      } catch (error) {
+          console.error('Errore durante il recupero delle barche:', error);
       }
-      const data = await response.json();
-      renderBoats(data);
-    } catch (error) {
-      console.error('Errore durante il recupero delle barche:', error);
-      // Gestione dell'errore: mostrare un messaggio all'utente
-    }
   }
 
-  // Funzione per renderizzare le barche nella pagina
   function renderBoats(data) {
       const boatsList = document.getElementById('boats-list');
 
-    if (!boatsList) {
-      console.error('Elemento con ID "boats-list" non trovato');
-      return; // Esci dalla funzione se l'elemento non esiste
-    }
+      if (!boatsList) {
+          console.error('Elemento con ID "boats-list" non trovato');
+          return;
+      }
 
-    boatsList.innerHTML = ''; // Pulisce il contenuto precedente
+      boatsList.innerHTML = '';
 
-    data.forEach(boat => {
-      const boatCard = document.createElement('div');
-      boatCard.className = 'boat-card';
+      data.forEach(boat => {
+          const boatCard = document.createElement('div');
+          boatCard.className = 'boat-card';
 
-        const boatImage = document.createElement('img');
-        boatImage.src = boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
-        boatImage.alt = boat.name;
-        boatImage.className = 'boat-image';
+          const boatImage = document.createElement('img');
+          const imageUrl = boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
+          
+          boatImage.src = imageUrl;
+          boatImage.alt = boat.name;
+          boatImage.className = 'boat-image';
 
-        const boatDetails = document.createElement('div');
-        boatDetails.className = 'boat-details';
+          // Aggiungi log per il debugging
+          console.log('Rendering boat image:', imageUrl);
 
-        const boatName = document.createElement('h2');
-        boatName.textContent = boat.name;
+          boatImage.onerror = () => {
+              console.error('Impossibile caricare l\'immagine:', imageUrl);
+              boatImage.src = 'https://via.placeholder.com/150'; // URL di fallback per errori di caricamento
+          };
 
-        const boatDescription = document.createElement('p');
-        boatDescription.textContent = boat.description;
+          boatImage.onload = () => {
+              console.log('Immagine caricata con successo:', imageUrl);
+          };
 
-        const boatPrice = document.createElement('p');
-        boatPrice.className = 'boat-price';
-        boatPrice.textContent = `Price: ${boat.price} EUR`;
+          const boatDetails = document.createElement('div');
+          boatDetails.className = 'boat-details';
 
-        const flags = document.createElement('div');
-        flags.className = 'flags';
+          const boatName = document.createElement('h2');
+          boatName.textContent = boat.name;
 
-        const redFlag = document.createElement('button');
-        redFlag.className = 'flag green-flag';
-        redFlag.textContent = 'Affitta';
+          const boatDescription = document.createElement('p');
+          boatDescription.textContent = boat.description;
 
-        const greenFlag = document.createElement('button');
-        greenFlag.className = 'flag green-flag';
-        greenFlag.textContent = 'Aggiungi al carrello';
-  
-        greenFlag.addEventListener('click', async () => {
-          try {
-            if (!jwtToken) {
-              throw new Error('Token JWT non trovato in sessione');
-            }
-  
-            const reservationDate = new Date().toISOString().slice(0, 10);
-            const startDate = new Date().toISOString();
-            const endDate = new Date(new Date().setHours(new Date().getHours() + 2)).toISOString();
-  
-            const requestBody = {
-              boatId: boat.id,
-              userId: userId,
-              reservationDate: reservationDate,
-              startDate: startDate,
-              endDate: endDate
-            };
-            console.log('Request body:', requestBody);
-            console.log("boatId: " + boat.id);
-  
-            const response = await fetch('http://localhost:8080/Reservation/addReservation', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${jwtToken}`
-              },
-              body: JSON.stringify(requestBody)
-            });
-  
-            if (!response.ok) {
-              const errorData = await response.json().catch(() => ({}));
-              throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}\n${JSON.stringify(errorData)}`);
-            }
-  
-            alert('Barca aggiunta al carrello!');
-            window.location.href = 'html/cart.html';
-          } catch (error) {
-            console.error('Errore durante l\'aggiunta al carrello:', error);
-            alert(`Errore durante l'aggiunta al carrello: ${error.message}`);
+          const boatPrice = document.createElement('p');
+          boatPrice.className = 'boat-price';
+          boatPrice.textContent = `Price: ${boat.price} EUR`;
+
+          const flags = document.createElement('div');
+          flags.className = 'flags';
+
+          // Logica per la pagina admin
+          if (window.location.pathname.includes('html/admin.html')) {
+              const deleteButton = document.createElement('button');
+              deleteButton.className = 'delete-boat-button';
+              deleteButton.textContent = 'Elimina Barca';
+              deleteButton.setAttribute('data-id', boat.id);
+              deleteButton.addEventListener('click', async () => {
+                  await deleteBoat(boat.id);
+              });
+              flags.appendChild(deleteButton);
+          } else {
+              const rentButton = document.createElement('button');
+              rentButton.className = 'flag green-flag';
+              rentButton.textContent = 'Affitta';
+
+              const addToCartButton = document.createElement('button');
+              addToCartButton.className = 'flag green-flag';
+              addToCartButton.textContent = 'Aggiungi al carrello';
+
+              addToCartButton.addEventListener('click', async () => {
+                  try {
+                      sessionStorage.setItem('selectedBoatId', boat.id);
+                      selectedBoatId = boat.id;
+                      await addToCart();
+                  } catch (error) {
+                      console.error('Errore durante l\'aggiunta al carrello:', error);
+                      alert(`Errore durante l'aggiunta al carrello: ${error.message}`);
+                  }
+              });
+
+              flags.appendChild(rentButton);
+              flags.appendChild(addToCartButton);
           }
-        });
 
-        flags.appendChild(redFlag);
-        flags.appendChild(greenFlag);
+          boatDetails.appendChild(boatName);
+          boatDetails.appendChild(boatDescription);
+          boatDetails.appendChild(boatPrice);
+          boatDetails.appendChild(flags);
 
-        boatDetails.appendChild(boatName);
-        boatDetails.appendChild(boatDescription);
-        boatDetails.appendChild(boatPrice);
-        boatDetails.appendChild(flags);
+          boatCard.appendChild(boatImage);
+          boatCard.appendChild(boatDetails);
 
-        boatCard.appendChild(boatImage);
-        boatCard.appendChild(boatDetails);
-
-        boatsList.appendChild(boatCard);
-    });
-}
+          boatsList.appendChild(boatCard);
+      });
+  }
 });

@@ -27,7 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       const data = await response.json();
-      console.log('Dati:', data);
+      console.log('Dati ricevuti dal server:', data);
+
+      if (data.id) {
+        sessionStorage.setItem('userId', data.id);
+        console.log('ID utente salvato nel sessionStorage:', data.id);
+      } else {
+        console.error('ID utente non trovato nei dati ricevuti');
+      }
 
       registrationMessage.textContent = 'Registrazione riuscita!';
       showPopupMessage('Registrazione riuscita!', 'success');
@@ -35,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Ritarda il reindirizzamento dopo 3 secondi
       setTimeout(() => {
         window.location.href = '../index.html';
-      }, 1500);
+      }, 3000);
 
     } catch (error) {
       console.error('Errore durante la registrazione:', error);

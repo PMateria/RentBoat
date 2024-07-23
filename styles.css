@@ -2,7 +2,11 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  background-image: url('https://media-assets.wired.it/photos/615d9c8675d036265a29e715/master/w_1600%2Cc_limit/wired_placeholder_dummy.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 header {
@@ -35,117 +39,72 @@ main {
   padding: 20px;
 }
 
-.boats-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+h1 {
+  text-align: center;
+  color: red;
 }
 
-.boat-card {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-  width: 300px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+#adminContent {
   display: flex;
   flex-direction: column;
-}
-
-.boat-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.boat-details {
-  padding: 15px;
-  flex: 1;
-}
-
-.boat-details h2 {
-  margin-top: 0;
-}
-
-.boat-price {
-  font-weight: bold;
-  margin: 10px 0;
-}
-
-.flags {
-  display: flex;
-  justify-content: space-between;
-}
-
-.flag {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-}
-
-.red-flag {
-  background-color: #f44336;
-}
-
-.green-flag {
-  background-color: #4CAF50;
-}
-
-#reservations-list {
-  padding: 20px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  min-height: 200px; /* Imposta un'altezza minima per garantire che l'elemento sia visibile */
-  margin-top: 20px; /* Aggiungi un margine superiore se necessario */
-}
-
-/* Stili per le card delle prenotazioni */
-.reservation-card {
-  display: flex;
   align-items: center;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 16px 0;
-  padding: 16px;
-  transition: transform 0.2s;
 }
 
-.reservation-card:hover {
-  transform: scale(1.02);
+.section {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 1200px;
 }
 
-.reservation-image {
-  width: 150px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-right: 16px;
+.section h2 {
+  margin-bottom: 10px;
+  color: red;
 }
 
-.reservation-details {
-  flex: 1;
+/* Modifica per la Lista Barche */
+/* Imposta il layout delle card per assicurarti che non si sovrappongano */
+#boats-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* Spazio tra le card */
+    padding: 15px; /* Spazio interno al contenitore */
+    box-sizing: border-box; /* Include padding e border nel calcolo della larghezza */
 }
 
-.reservation-details p {
-  margin: 4px 0;
-}
-
-/* Stili per le card delle barche */
 .boat-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 16px;
-  padding: 16px;
-  transition: transform 0.2s;
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: calc(20% - 30px); /* Cinque card per riga su schermi più grandi */
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 200px; /* Imposta una larghezza minima per la card */
+}
+
+/* Adatta le card per schermi più piccoli */
+@media (max-width: 1200px) {
+    .boat-card {
+        width: calc(25% - 30px); /* Quattro card per riga */
+    }
+}
+
+@media (max-width: 768px) {
+    .boat-card {
+        width: calc(33.33% - 30px); /* Tre card per riga */
+    }
+}
+
+@media (max-width: 480px) {
+    .boat-card {
+        width: calc(50% - 30px); /* Due card per riga */
+    }
+}
+
+@media (max-width: 360px) {
+    .boat-card {
+        width: calc(100% - 30px); /* Una card per riga */
+    }
 }
 
 .boat-card:hover {
@@ -154,12 +113,13 @@ main {
 
 .boat-image {
   width: 100%;
-  height: auto;
+  height: 120px; /* Ridotto per rendere l'immagine più piccola */
+  object-fit: cover;
   border-radius: 8px;
 }
 
 .boat-details {
-  padding: 16px 0;
+  padding: 8px 0; /* Ridotto per una card più compatta */
 }
 
 .boat-price {
@@ -186,4 +146,166 @@ main {
 
 .green-flag:hover {
   background-color: #218838;
+}
+
+/* Stile per la lista degli utenti */
+#users-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center; /* Centra la lista degli utenti orizzontalmente */
+}
+
+/* Stile per ogni card utente */
+.user-card {
+  background-color: #fff; /* Imposta lo sfondo a bianco */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 250px; /* Imposta una larghezza fissa per le card */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 1; /* Assicura che l'opacità sia completamente opaca */
+}
+
+/* Stile per il contenuto della card */
+.user-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Stile per il pulsante di eliminazione */
+.delete-button {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.delete-button:hover {
+  background-color: #c62828;
+}
+
+.reservations-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Spazio tra le card */
+  padding: 15px; /* Spazio interno al contenitore */
+  box-sizing: border-box; /* Include padding e border nel calcolo della larghezza */
+}
+
+/* Card per le prenotazioni */
+.reservation-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  width: calc(20% - 30px); /* Cinque card per riga su schermi più grandi */
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 200px; /* Imposta una larghezza minima per la card */
+}
+
+/* Adatta le card per schermi più piccoli */
+@media (max-width: 1200px) {
+  .reservation-card {
+      width: calc(25% - 30px); /* Quattro card per riga */
+  }
+}
+
+@media (max-width: 768px) {
+  .reservation-card {
+      width: calc(33.33% - 30px); /* Tre card per riga */
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-card {
+      width: calc(50% - 30px); /* Due card per riga */
+  }
+}
+
+@media (max-width: 360px) {
+  .reservation-card {
+      width: calc(100% - 30px); /* Una card per riga */
+  }
+}
+
+.reservation-card:hover {
+transform: scale(1.02);
+}
+
+.reservation-image {
+width: 100%;
+height: 120px; /* Ridotto per rendere l'immagine più piccola */
+object-fit: cover;
+border-radius: 8px;
+}
+
+.reservation-details {
+padding: 8px 0; /* Ridotto per una card più compatta */
+}
+
+.reservation-price {
+font-weight: bold;
+margin-top: 8px;
+}
+
+/* Stile per il contenitore delle prenotazioni */
+#reservations-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Spazio tra le card */
+  padding: 15px; /* Spazio interno al contenitore */
+  box-sizing: border-box; /* Include padding e border nel calcolo della larghezza */
+}
+
+/* Stile per ogni card di prenotazione */
+.reservation-card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  width: calc(20% - 30px); /* Cinque card per riga su schermi più grandi */
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 200px; /* Imposta una larghezza minima per la card */
+}
+
+/* Adatta le card per schermi più piccoli */
+@media (max-width: 1200px) {
+  .reservation-card {
+      width: calc(25% - 30px); /* Quattro card per riga */
+  }
+}
+
+@media (max-width: 768px) {
+  .reservation-card {
+      width: calc(33.33% - 30px); /* Tre card per riga */
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-card {
+      width: calc(50% - 30px); /* Due card per riga */
+  }
+}
+
+@media (max-width: 360px) {
+  .reservation-card {
+      width: calc(100% - 30px); /* Una card per riga */
+  }
+}
+
+.reservation-card:hover {
+  transform: scale(1.02);
 }
