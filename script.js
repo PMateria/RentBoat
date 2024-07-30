@@ -95,8 +95,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             startDate: startDate,
             endDate: endDate
         };
-        
-        console.log("requestBody.userId", userId)
+
+        console.log("requestBody.userId", userId);
 
         const response = await fetch('http://localhost:8080/Reservation/addReservation', {
             method: 'POST',
@@ -113,7 +113,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Response error text:', errorText);
-            throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}\n${errorText}`);
+            if (response.status === 403 || response.status === 409) {
+                // Assuming 409 Conflict is used for boat already booked
+                alert('La barca è già prenotata per il periodo richiesto. Dovrà prima essere cancellata dall Amministratore');
+            } else {
+                throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}\n${errorText}`);
+            }
+            return;
         }
 
         const responseData = await response.json();
@@ -131,13 +137,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 }
   
   async function fetchReservations() {
+    const userId= sessionStorage.getItem('userId')
       try {
-          if (!selectedBoatId) {
+          if (!userId) {
               console.error('Boat ID non disponibile');
               return;
           }
-
-          const response = await fetch(`http://localhost:8080/Reservation/byBoatId/${selectedBoatId}`, {
+          console.log("userId",userId)
+          const response = await fetch(`http://localhost:8080/Reservation/byUserId/${userId}`, {
               headers: {
                   Authorization: `Bearer ${jwtToken}`
               }
