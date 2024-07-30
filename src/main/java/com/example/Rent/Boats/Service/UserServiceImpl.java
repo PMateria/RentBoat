@@ -77,8 +77,8 @@
             logger.info("Attempting to delete user with ID {}", id);
 
             // Controlla se ci sono prenotazioni associate all'utente
-            List<Reservation> reservations = reservationRepository.findByUserId(id);
-            logger.info("Found {} reservations for user ID {}", reservations.size(), id);
+            Optional<Reservation> reservations = reservationRepository.findById(id);
+
 
             if (!reservations.isEmpty()) {
                 logger.warn("Cannot delete user with ID {}: associated reservations found.", id);

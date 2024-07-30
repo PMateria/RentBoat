@@ -35,28 +35,34 @@ public class ReservationService {
 
     @Transactional
     public Reservation addReservation(Long boatId, Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Recupera la barca e l'utente dal repository
         Optional<Boat> optionalBoat = boatRepository.findById(boatId);
         Optional<User> optionalUser = userRepository.findById(userId);
 
-        // Verifica se la barca e l'utente esistono
         if (optionalBoat.isPresent() && optionalUser.isPresent()) {
             Boat boat = optionalBoat.get();
             User user = optionalUser.get();
 
-            // Crea una nuova prenotazione
-            Reservation reservation = new Reservation();
-            reservation.setBoat(boat);
-            reservation.setUser(user);
-            reservation.setStartDate(startDate);
-            reservation.setEndDate(endDate);
-            reservation.setReservationDate(LocalDate.now());
+            // Verifica se la barca è già prenotata per il periodo richiesto
+            if (isBoatAvailable(boatId, startDate, endDate)) {
+                Reservation reservation = new Reservation();
+                reservation.setBoat(boat);
+                reservation.setUser(user);
+                reservation.setStartDate(startDate);
+                reservation.setEndDate(endDate);
+                reservation.setReservationDate(LocalDate.now());
 
-            // Salva la prenotazione nel repository
-            return reservationRepository.save(reservation);
+                return reservationRepository.save(reservation);
+            } else {
+                throw new IllegalStateException("La barca è già prenotata per il periodo richiesto");
+            }
         } else {
             throw new IllegalArgumentException("Barca o utente non trovato con gli ID specificati");
         }
+    }
+
+    private boolean isBoatAvailable(Long boatId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Reservation> existingReservations = reservationRepository.findByBoatIdAndDateRange(boatId, startDate, endDate);
+        return existingReservations.isEmpty();
     }
 
     public Reservation updateReservation(Long reservationId, Long boatId, Long userId, LocalDateTime startDate, LocalDateTime endDate) {
@@ -93,8 +99,8 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public List<Reservation> getReservationsByBoatId(Long boatId) {
-        return reservationRepository.findByBoatId(boatId);
+    public List<Reservation> getReservationsByUserId(Long userId) {
+        return reservationRepository.findByUserId(userId);
     }
 
 

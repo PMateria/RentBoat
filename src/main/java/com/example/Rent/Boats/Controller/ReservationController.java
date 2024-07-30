@@ -62,9 +62,9 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/byBoatId/{boatId}")
-    public ResponseEntity<List<Reservation>> getReservationsByBoatId(@PathVariable("boatId") Long boatId) {
-        List<Reservation> reservations = reservationService.getReservationsByBoatId(boatId);
+    @GetMapping("/byUserId/{userId}")
+    public ResponseEntity<List<Reservation>> getReservationsByUserId(@PathVariable("userId") Long userId) {
+        List<Reservation> reservations = reservationService.getReservationsByUserId(userId);
         if (reservations.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
