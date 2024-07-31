@@ -141,7 +141,7 @@
                     <div class="user-card-content">
                         <h3>${userName}</h3>
                         <p>${userEmail}</p>
-                        <button class="delete-button" data-id="${user.id}">Elimina</button>
+                        <button class="delete-button" data-id="${user.id}">Elimina Utente</button>
                     </div>
                 `;
                 usersList.appendChild(userCard);

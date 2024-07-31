@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             const cartLink = document.createElement('li');
-            cartLink.innerHTML = '<a href="/html/cart.html" id="cart-link">Carrello</a>';
+            cartLink.innerHTML = '<a href="/html/cart.html" id="cart-link">Riepilogo</a>';
             leftNav.appendChild(cartLink);
 
             const cartButton = document.getElementById('cart-link');
@@ -283,11 +283,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 const rentButton = document.createElement('button');
                 rentButton.className = 'flag green-flag';
-                rentButton.textContent = 'Affitta';
+                rentButton.textContent = 'Aggiungi al carrello';
     
                 const addToCartButton = document.createElement('button');
                 addToCartButton.className = 'flag green-flag';
-                addToCartButton.textContent = 'Aggiungi al carrello';
+                addToCartButton.textContent = 'Acquista';
     
                 addToCartButton.addEventListener('click', async () => {
                     try {
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         selectedBoatId = boat.id;
                         await addToCart();
                     } catch (error) {
-                        console.error('Errore durante l\'aggiunta al carrello:', error);
+                        console.error('Errore durante l\'acquisto', error);
                         alert(`Errore durante l'aggiunta al carrello: ${error.message}`);
                     }
                 });
