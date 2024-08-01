@@ -3,28 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Prestiti - RentBoat</title>
-    <link rel="stylesheet" href="../styles.css">
+    <title>Carrello - RentBoat</title>
+    <link rel="stylesheet" href="../css/cart.css">
 </head>
 <body>
     <header>
         <nav id="navbar">
-            <ul>
-                <div class="left" id="left-nav">
-                    <!-- Vuoto, poiché il menu a sinistra non cambia -->
-                </div>
-                <div class="right" id="right-nav">
-                    <!-- Vuoto, poiché il menu a destra non cambia -->
-                </div>
-            </ul>
+            <div class="left" id="left-nav"></div>
+            <div class="right" id="right-nav"></div>
         </nav>
     </header>
     <main>
         <section>
-            <h1>Lista di tutti i Noleggi</h1>
-            <div class="reservations-container" id="reservations-list">
-                <!-- Qui verrà inserita la lista dei prestiti tramite JavaScript -->
-            </div>
+            <h1>Il tuo Carrello</h1>
+            <div id="cart-items-container"></div>
+            <div id="cart-total"></div>
+            <button id="checkout-button">Effettua Ordine</button>
         </section>
     </main>
     <script src="../script.js"></script>

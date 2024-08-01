@@ -1,0 +1,108 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #343a40; /* Colore scuro per la navbar */
+    color: white;
+    padding: 0.5em 0; /* Ridotto il padding verticale per la navbar */
+}
+
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em; /* Ridotto il padding orizzontale per la navbar */
+}
+
+#navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+#navbar .left, #navbar .right {
+    display: flex;
+}
+
+#navbar .left {
+    flex: 1; /* Occupy available space on the left */
+    justify-content: flex-start; /* Align items to the left */
+}
+
+#navbar .right {
+    flex: 1; /* Occupy available space on the right */
+    justify-content: flex-end; /* Align items to the right */
+}
+
+#navbar ul li {
+    margin-left: 0.5em; /* Ridotto il margine tra i link */
+}
+
+#navbar ul li a {
+    background-color: white; /* Colore di base bianco */
+    color: #333 !important; /* Colore del testo scuro, !important per sovrascrivere altri stili */
+    text-decoration: none;
+    padding: 0.3em 0.6em;
+}
+    #navbar ul li a:hover {
+        background-color: #f8f9fa; /* Colore di sfondo al passaggio del mouse */
+        border-color: #bbb; /* Colore del bordo al passaggio del mouse */
+    }
+
+    /* Stili specifici per il carrello */
+    main {
+        padding: 2em;
+        background-color: #f9f9f9;
+    }
+
+    h1 {
+        color: #333;
+    }
+
+    #cart-items-container {
+        background-color: #fff;
+        padding: 2em;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding: 1em 0;
+    }
+
+    .cart-item h3 {
+        margin: 0;
+    }
+
+    .cart-item p {
+        margin: 0.5em 0;
+    }
+
+    .cart-item button {
+        background-color: #d9534f;
+        color: white;
+        border: none;
+        padding: 0.5em 1em;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .cart-item button:hover {
+        background-color: #c9302c;
+    }
+
+    .cart-total {
+        font-weight: bold;
+        font-size: 1.2em;
+        text-align: right;
+        margin-top: 1em;
+    }

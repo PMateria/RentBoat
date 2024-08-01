@@ -1,0 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #343a40;
+    color: white;
+    padding: 0.5em 0;
+}
+
+#navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em;
+}
+
+#navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+#navbar .left, #navbar .right {
+    display: flex;
+}
+
+#navbar .left {
+    flex: 1;
+    justify-content: flex-start;
+}
+
+#navbar .right {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+#navbar ul li {
+    margin-left: 0.5em;
+}
+
+#navbar ul li a {
+    background-color: transparent;
+    color: white !important;
+    text-decoration: none;
+    padding: 0.3em 0.6em;
+    border: 1px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+#navbar ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+main {
+    padding: 20px;
+}
+
+.summary-item {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.summary-image {
+    max-width: 150px;
+    height: auto;
+}
+
+.add-to-cart-button, .purchase-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.add-to-cart-button:hover, .purchase-button:hover {
+    background-color: #45a049;
+}
+#reservation-form {
+    margin-top: 20px;
+}
+
+#reservation-form h2 {
+    margin-bottom: 10px;
+}
+
+#reservation-form-content {
+    display: flex;
+    flex-direction: column;
+}
+
+#reservation-form-content label {
+    margin-bottom: 5px;
+}
+
+#reservation-form-content input[type="date"], 
+#reservation-form-content select {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+#reserve-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+#reserve-button:hover {
+    background-color: #45a049;
+}
