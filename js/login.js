@@ -26,6 +26,7 @@ loginForm.addEventListener('submit', async function(event) {
         
         if (data.token && data.token.startsWith('eyJ')) {
             loginMessage.textContent = 'Login riuscito!';
+            loginMessage.style.color = 'green'; // Imposta il colore a verde
             sessionStorage.setItem('jwtToken', data.token);
             sessionStorage.setItem('userId', data.userId);
 
@@ -39,15 +40,6 @@ loginForm.addEventListener('submit', async function(event) {
     } catch (error) {
         console.error('Errore durante il login:', error);
         loginMessage.textContent = 'Credenziali non valide. Riprova.';
+        loginMessage.style.color = 'red'; // Imposta il colore a rosso in caso di errore
     }
 });
-
-function showPopupMessage(message) {
-    popupMessage.textContent = message;
-    popup.style.display = 'block';
-
-    // Nascondi il popup dopo 3 secondi
-    setTimeout(() => {
-        popup.style.display = 'none';
-    }, 3000);
-}

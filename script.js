@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const leftNav = document.getElementById('left-nav');
   const rightNav = document.getElementById('right-nav');
-  const boatsList = document.getElementById('boats-list');
-  const cartItemsContainer = document.getElementById('cart-items-container');
-  const checkoutButton = document.getElementById('checkout-button');
+
   
   let jwtToken = sessionStorage.getItem('jwtToken');
   let userId = sessionStorage.getItem('userId');
@@ -14,36 +12,32 @@ document.addEventListener('DOMContentLoaded', async () => {
       userId = payload.sub;
       const roles = payload.roles;
       
-      // Add Home link (except on index.html)
-      if (!window.location.pathname.endsWith('index.html')) {
-        const homeLink = document.createElement('li');
-        homeLink.innerHTML = '<a href="/index.html">Home</a>';
-        leftNav.appendChild(homeLink);
-      }
       
-      // Add Cart link
-      const cartLink = document.createElement('li');
-      cartLink.innerHTML = '<a href="/html/cart.html">Carrello</a>';
+      // Add other links
+      const cartLink = document.createElement('ul');
+      cartLink.innerHTML = '<a href="/html/cart.html" style="color: white !important;">Carrello</a>';
       leftNav.appendChild(cartLink);
       
-      // Add Summary link
-      const summaryLink = document.createElement('li');
-      summaryLink.innerHTML = '<a href="/html/summary.html">Riepilogo</a>';
+      const summaryLink = document.createElement('ul');
+      summaryLink.innerHTML = '<a href="/html/summary.html" style= "color: white !important;" >Riepilogo</a>';
       leftNav.appendChild(summaryLink);
       
-      // Add Logout link
-      const logoutLink = document.createElement('li');
-      logoutLink.innerHTML = '<a href="#" id="logout-link">Logout</a>';
+      const logoutLink = document.createElement('ul');
+      logoutLink.innerHTML = '<a href="#" id="logout-link" style= "color: white !important;" >Logout</a>';
       rightNav.appendChild(logoutLink);
       
+      // Handle logout
       const logoutButton = document.getElementById('logout-link');
       logoutButton.addEventListener('click', handleLogoutButtonClick);
       
+      // Add admin link if needed
       if (roles && roles.includes('ROLE_ADMIN')) {
-        const adminLink = document.createElement('li');
-        adminLink.innerHTML = '<a href="/html/admin.html">ADMIN</a>';
+        const adminLink = document.createElement('ul');
+        adminLink.className = 'admin-link'; // Aggiungiamo una classe specifica
+        adminLink.innerHTML = '<a href="/html/admin.html" style="color: white !important;">ADMIN</a>';
         rightNav.appendChild(adminLink);
       }
+    
     } catch (error) {
       console.error('Errore nel parsing del token JWT:', error);
     }
@@ -59,10 +53,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   addHomeButton();
   
-  function handleCartButtonClick(event) {
-    event.preventDefault();
-    window.location.href = '/html/cart.html';
-  }
   
  async function addToCart(boatId) {
     try {
@@ -206,20 +196,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   function addToCartWithDates(boatId, pickupDate, pickupTime, returnDate, returnTime) {
     const boatCard = document.querySelector(`.boat-card[data-id="${boatId}"]`);
     const boatDetails = {
-      boatId: boatId,
-      name: boatCard.querySelector('.boat-details h2').textContent,
-      price: boatCard.querySelector('.boat-price').textContent,
-      imageURL: boatCard.querySelector('.boat-image').src,
-      pickupDateTime: new Date(`${pickupDate}T${pickupTime}`).toISOString(),
-      returnDateTime: new Date(`${returnDate}T${returnTime}`).toISOString()
+        boatId: boatId,
+        userId: userId, // Aggiungi l'ID utente
+        name: boatCard.querySelector('.boat-details h2').textContent,
+        price: boatCard.querySelector('.boat-price').textContent,
+        imageURL: boatCard.querySelector('.boat-image').src,
+        pickupDateTime: new Date(`${pickupDate}T${pickupTime}`).toISOString(),
+        returnDateTime: new Date(`${returnDate}T${returnTime}`).toISOString()
     };
+    console.log(userId,"userid")
 
     const priceMatch = boatDetails.price.match(/(\d+(\.\d+)?)/);
     if (priceMatch) {
-      boatDetails.numericPrice = parseFloat(priceMatch[0]);
+        boatDetails.numericPrice = parseFloat(priceMatch[0]);
     } else {
-      console.error('Impossibile estrarre il prezzo numerico');
-      boatDetails.numericPrice = 0;
+        console.error('Impossibile estrarre il prezzo numerico');
+        boatDetails.numericPrice = 0;
     }
 
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -227,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     localStorage.setItem('cart', JSON.stringify(cart));
 
     alert('Barca aggiunta al carrello!');
-  }
+}
 
      const priceMatch = boatDetails.price.match(/(\d+(\.\d+)?)/);
     if (priceMatch) {
@@ -237,65 +229,52 @@ document.addEventListener('DOMContentLoaded', async () => {
       boatDetails.numericPrice = 0;
     }
 
-  async function handlePurchase(boatId) {
-    try {
-        // Check if the boat is already loaned
-        const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
-        const isBoatLoaned = loanedBoats.some(boat => boat.boatId === boatId);
-
-        if (isBoatLoaned) {
-            alert('Questa barca è già stata presa in prestito e non è disponibile per l\'acquisto.');
-            return;
-        }
-        showDateSelectionForm(boatId);
-
-        const boatCard = document.querySelector(`.boat-card[data-id="${boatId}"]`);
-        if (!boatCard) {
-            throw new Error('Boat card not found');
-        }
-
-        const pickupDate = boatCard.querySelector('#pickup-date').value;
-        const returnDate = boatCard.querySelector('#return-date').value;
-
-        if (!pickupDate || !returnDate) {
-            alert('Per favore, inserisci sia la data di ritiro che la data di consegna.');
-            return;
-        }
-
-        const boatDetails = {
-            boatId: boatId,
-            name: boatCard.querySelector('.boat-details h2').textContent,
-            price: boatCard.querySelector('.boat-price').textContent,
-            imageURL: boatCard.querySelector('.boat-image').src,
-            pickupDate: new Date(pickupDate).toISOString(), // Save pickup date
-            returnDate: new Date(returnDate).toISOString() // Save return date
-        };
-
-        const updatedLoanedBoats = [...loanedBoats, boatDetails];
-        localStorage.setItem('loanedBoats', JSON.stringify(updatedLoanedBoats));
-        
-        alert('Barca acquistata con successo! Puoi vederla nella pagina di riepilogo.');
-        window.location.href = '/html/summary.html';
-    } catch (error) {
-        console.error('Errore durante l\'acquisto', error);
-        alert(`Errore durante l'acquisto: ${error.message}`);
-    }
-}
-
-
-
-  async function addToSummary(boatDetails) {
-    const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
-    const existingBoat = loanedBoats.find(boat => boat.boatId === boatDetails.boatId);
+    async function handlePurchase(boatId) {
+      try {
+          // Check if the boat is already loaned
+          const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
+          const isBoatLoaned = loanedBoats.some(boat => boat.boatId === boatId && boat.userId === userId);
   
-    if (existingBoat) {
-      alert('Questa barca è già stata acquistata.');
-      return;
-    }
+          if (isBoatLoaned) {
+              alert('Questa barca è già stata presa in prestito e non è disponibile per l\'acquisto.');
+              return;
+          }
+          showDateSelectionForm(boatId);
   
-    loanedBoats.push(boatDetails);
-    localStorage.setItem('loanedBoats', JSON.stringify(loanedBoats));
-  }
+          const boatCard = document.querySelector(`.boat-card[data-id="${boatId}"]`);
+          if (!boatCard) {
+              throw new Error('Boat card not found');
+          }
+  
+          const pickupDate = boatCard.querySelector('#pickup-date').value;
+          const returnDate = boatCard.querySelector('#return-date').value;
+  
+          if (!pickupDate || !returnDate) {
+              alert('Per favore, inserisci sia la data di ritiro che la data di consegna.');
+              return;
+          }
+  
+          const boatDetails = {
+              boatId: boatId,
+              userId: userId, // Aggiungi l'ID utente
+              name: boatCard.querySelector('.boat-details h2').textContent,
+              price: boatCard.querySelector('.boat-price').textContent,
+              imageURL: boatCard.querySelector('.boat-image').src,
+              pickupDate: new Date(pickupDate).toISOString(), // Save pickup date
+              returnDate: new Date(returnDate).toISOString() // Save return date
+          };
+  
+          const updatedLoanedBoats = [...loanedBoats, boatDetails];
+          localStorage.setItem('loanedBoats', JSON.stringify(updatedLoanedBoats));
+          
+          alert('Barca acquistata con successo! Puoi vederla nella pagina di riepilogo.');
+          window.location.href = '/html/summary.html';
+      } catch (error) {
+          console.error('Errore durante l\'acquisto', error);
+          alert(`Errore durante l'acquisto: ${error.message}`);
+      }
+    }
+
   
   async function fetchCartItems() {
     const cartItemsContainer = document.getElementById('cart-items-container');
@@ -370,12 +349,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = '/html/summary.html'; // Reindirizza alla pagina summary
   }
   
-  function clearLocalStorageState() {
-    localStorage.removeItem('cart');
-    localStorage.removeItem('loanedBoats');
-    console.log('Local Storage pulito');
-    debugLocalStorage();
-  }
   
   async function loadBoats() {
     try {
@@ -410,6 +383,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       boatImage.src = imageUrl;
       boatImage.alt = boat.name;
+      
       boatImage.className = 'boat-image';
       
       boatImage.onerror = () => {
@@ -425,9 +399,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const boatName = document.createElement('h2');
       boatName.textContent = boat.name;
+      boatName.style.color= 'red';
       
       const boatDescription = document.createElement('p');
-      boatDescription.textContent = boat.description;
+      boatDescription.innerHTML = `<strong>${boat.description}</strong>`;
+      boatDescription.style.color= 'black';
+
       
       const boatPrice = document.createElement('p');
       boatPrice.className = 'boat-price';
@@ -448,6 +425,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const addToCartButton = document.createElement('button');
         addToCartButton.className = 'flag blue-flag';
         addToCartButton.textContent = 'Aggiungi al carrello';
+        addToCartButton.style.color = 'black'; // Imposta il colore a rosso in caso di errore
+
         
         addToCartButton.addEventListener('click', () => {
           addToCart(boat.id);
@@ -498,28 +477,54 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   function handleLogoutButtonClick(event) {
     event.preventDefault();
-    sessionStorage.removeItem('jwtToken');
-    sessionStorage.removeItem('userId');
-    window.location.href = '/index.html';
+    sessionStorage.clear();
+    localStorage.removeItem('cart');
+
+    const remainingCart = localStorage.getItem('cart');
+
+    if (remainingCart) {
+      console.log('Cart still exists, forcing clear');
+      localStorage.setItem('cart', '[]');
+      console.log('Cart forcibly cleared');
+    }
+    setTimeout(() => {
+      window.location.href = '/index.html';
+    }, 100);
   }
   
   function appendLoginAndRegistrationLinks() {
     const loginLink = document.createElement('li');
-    loginLink.innerHTML = '<a href="/html/login.html">Login</a>';
+    loginLink.innerHTML = '<a href="/html/login.html" style="margin-right: 15px;">Login - Registrazione</a>';
     leftNav.appendChild(loginLink);
-    
-    const registerLink = document.createElement('li');
-    registerLink.innerHTML = '<a href="/html/register.html">Registrati</a>';
-    leftNav.appendChild(registerLink);
   }
+
   
   function addHomeButton() {
-    const homeLink = document.createElement('li');
-    homeLink.innerHTML = '<a href="/index.html" id="home-link">Home</a>';
-    
-    if (!window.location.pathname.endsWith('index.html')) {
-      leftNav.appendChild(homeLink);
+    const currentPath = window.location.pathname;
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+
+    if (currentPath === '/index.html' || currentPath === '/' || 
+        (hostname === 'localhost' && port === '8081' && (currentPath === '/index.html' || currentPath === '/'))) {
+      return;
     }
+
+    const homeLink = document.createElement('li');
+    const anchor = document.createElement('a');
+    anchor.href = '/index.html';
+    anchor.id = 'home-link';
+    anchor.className = 'navbar-link';
+    anchor.textContent = 'Home';
+    anchor.style.marginRight = '15px';  // Aggiunto margine destro
+    homeLink.appendChild(anchor);
+    leftNav.appendChild(homeLink);
+  }
+
+  function applyStylesToExistingLinks() {
+    const navLinks = document.querySelectorAll('#left-nav a, #right-nav a');
+    navLinks.forEach(link => {
+      link.style.marginRight = '15px';
+    });
   }
   
   function debugLocalStorage() {
@@ -530,5 +535,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Uncomment the following line only if you want to reset the state for debugging
   // clearLocalStorageState();
+    applyStylesToExistingLinks();
+
   debugLocalStorage();
 });

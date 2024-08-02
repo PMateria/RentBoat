@@ -1,25 +1,33 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riepilogo Prestiti - RentBoat</title>
-    <link rel="stylesheet" href="../css/summary.css">
+    <title>Carrello - RentBoat</title>
+    <link rel="stylesheet" href="../css/cart.css">
 </head>
 <body>
     <header>
         <nav id="navbar">
-            <ul class="left" id="left-nav"></ul>
-            <ul class="right" id="right-nav"></ul>
+            <ul class="left" id="left-nav">
+                <!-- Aggiungi i link della navbar qui -->
+            </ul>
+            <ul class="right" id="right-nav">
+                <!-- Aggiungi i link della navbar qui -->
+            </ul>
         </nav>
     </header>
     <main>
-        <h1>Riepilogo Prestiti</h1>
-        <div id="summary-container"></div>
-        <!-- Modulo di selezione date per esempio, potrebbe essere utilizzato per altre pagine -->
-        
+        <section>
+            <h1>Il tuo Carrello</h1>
+            <div id="cart-items-container"></div>
+            <div id="cart-total"></div>
+            <div class="button-container">
+                <button id="checkout-button">Effettua Ordine</button>
+                <!-- Aggiungi eventuali altri pulsanti qui -->
+            </div>
+        </section>
     </main>
     <script src="../script.js"></script>
-    <script src="../js/summary.js"></script>
 </body>
 </html>

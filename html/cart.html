@@ -9,8 +9,13 @@
 <body>
     <header>
         <nav id="navbar">
-            <div class="left" id="left-nav"></div>
-            <div class="right" id="right-nav"></div>
+            <ul class="left" id="left-nav">
+                <!-- Altri link di navigazione a sinistra -->
+            </ul>
+       
+            <ul class="right" id="right-nav">
+                <!-- Altri link di navigazione a destra -->
+            </ul>
         </nav>
     </header>
     <main>
@@ -18,7 +23,10 @@
             <h1>Il tuo Carrello</h1>
             <div id="cart-items-container"></div>
             <div id="cart-total"></div>
-            <button id="checkout-button">Effettua Ordine</button>
+            <div class="button-container">
+                <button id="checkout-button">Effettua Ordine</button>
+                <!-- Aggiungi eventuali altri pulsanti qui -->
+            </div>
         </section>
     </main>
     <script src="../script.js"></script>

@@ -5,120 +5,108 @@ body {
 }
 
 header {
-    background-color: #343a40;
+    background-color: #333; /* Colore scuro per la navbar */
     color: white;
-    padding: 0.5em 0;
+    padding: 10px 0; /* Allineato con il padding della navbar nella pagina summary */
 }
 
 #navbar {
+    background: linear-gradient(135deg, #333, #5a5959); /* Gradiente simile a quello della pagina summary */
+    color: #fff;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1em;
+    justify-content: space-between; /* Allinea gli elementi della navbar */
+    align-items: center; /* Allinea verticalmente gli elementi della navbar */
+    padding: 0 1em; /* Padding orizzontale simile a quello della pagina summary */
 }
 
 #navbar ul {
-    list-style-type: none;
-    margin: 0;
+    list-style: none;
     padding: 0;
+    margin: 0;
     display: flex;
-    align-items: center;
+    justify-content: space-between; /* Spaziatura equidistante tra i pulsanti */
+    align-items: center; /* Allinea verticalmente i pulsanti */
 }
 
-#navbar .left, #navbar .right {
-    display: flex;
+#navbar li {
+    margin: 0 8px; /* Margine simile a quello della pagina summary */
 }
 
-#navbar .left {
-    flex: 1;
-    justify-content: flex-start;
-}
-
-#navbar .right {
-    flex: 1;
-    justify-content: flex-end;
-}
-
-#navbar ul li {
-    margin-left: 0.5em;
-}
-
-#navbar ul li a {
-    background-color: transparent;
-    color: white !important;
+#navbar a {
     text-decoration: none;
-    padding: 0.3em 0.6em;
-    border: 1px solid transparent;
-    transition: border-color 0.3s ease;
+    color: white;
+    font-weight: bold;
+    padding: 3px 7px; /* Padding simile a quello della pagina summary */
+    border-radius: 4px; /* Border-radius simile a quello della pagina summary */
+    transition: background-color 0.3s;
+    font-size: 14px; /* Dimensione del font simile a quella della pagina summary */
 }
 
-#navbar ul li a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
+#navbar a:hover {
+    background-color: #0056b3; /* Colore di hover simile a quello della pagina summary */
 }
 
 main {
-    padding: 20px;
+    padding: 20px; /* Padding simile a quello della pagina summary */
+    background-color: #f4f4f4; /* Colore di sfondo simile a quello della pagina summary */
 }
 
-.summary-item {
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    padding: 10px;
+h1 {
+    color: #0056b3; /* Colore del testo simile a quello della pagina summary */
 }
 
-.summary-image {
-    max-width: 150px;
-    height: auto;
+#cart-items-container {
+    background-color: #fff;
+    padding: 20px; /* Padding simile a quello delle card della pagina summary */
+    border-radius: 10px; /* Border-radius simile a quello delle card della pagina summary */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box-shadow simile a quello delle card della pagina summary */
 }
 
-.add-to-cart-button, .purchase-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
-}
-
-.add-to-cart-button:hover, .purchase-button:hover {
-    background-color: #45a049;
-}
-#reservation-form {
-    margin-top: 20px;
-}
-
-#reservation-form h2 {
-    margin-bottom: 10px;
-}
-
-#reservation-form-content {
+.cart-item {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd; /* Colore del bordo simile a quello della pagina summary */
+    padding: 10px 0; /* Padding simile a quello delle card della pagina summary */
 }
 
-#reservation-form-content label {
-    margin-bottom: 5px;
+.cart-item h3 {
+    margin: 0;
+    color: #0056b3; /* Colore del testo simile a quello della pagina summary */
 }
 
-#reservation-form-content input[type="date"], 
-#reservation-form-content select {
-    margin-bottom: 10px;
-    padding: 5px;
-    width: 100%;
+.cart-item p {
+    margin: 5px 0;
 }
 
-#reserve-button {
-    background-color: #4CAF50;
+/* Contenitore per i pulsanti */
+.button-container {
+    display: flex; /* Assicura che i pulsanti siano visualizzati in linea */
+    gap: 10px; /* Spazio tra i pulsanti */
+    margin-top: 20px; /* Margine superiore per separare i pulsanti dal contenuto */
+    justify-content: flex-start; /* Allinea i pulsanti a sinistra */
+}
+
+/* Pulsanti nella sezione carrello */
+.cart-item button, #checkout-button {
+    background-color: #0056b3; /* Colore di sfondo simile a quello dei pulsanti della pagina summary */
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px 20px; /* Padding simile a quello dei pulsanti della pagina summary */
+    border-radius: 5px; /* Border-radius simile a quello dei pulsanti della pagina summary */
     cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s; /* Transizione simile a quella dei pulsanti della pagina summary */
+    margin: 0; /* Assicura che non ci siano margini aggiuntivi */
 }
 
-#reserve-button:hover {
-    background-color: #45a049;
+.cart-item button:hover, #checkout-button:hover {
+    background-color: #004494; /* Colore di hover simile a quello dei pulsanti della pagina summary */
+    transform: scale(1.05); /* Effetto di hover simile a quello dei pulsanti della pagina summary */
+}
+
+.cart-total {
+    font-weight: bold;
+    font-size: 1.2em;
+    text-align: right;
+    margin-top: 20px; /* Margine superiore simile a quello della pagina summary */
 }

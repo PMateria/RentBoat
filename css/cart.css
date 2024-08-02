@@ -5,104 +5,108 @@ body {
 }
 
 header {
-    background-color: #343a40; /* Colore scuro per la navbar */
+    background-color: #333; /* Colore scuro per la navbar */
     color: white;
-    padding: 0.5em 0; /* Ridotto il padding verticale per la navbar */
+    padding: 10px 0; /* Allineato con il padding della navbar nella pagina summary */
 }
 
 #navbar {
+    background: linear-gradient(135deg, #333, #5a5959); /* Gradiente simile a quello della pagina summary */
+    color: #fff;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1em; /* Ridotto il padding orizzontale per la navbar */
+    justify-content: space-between; /* Allinea gli elementi della navbar come nella pagina summary */
+    align-items: center; /* Allinea verticalmente gli elementi della navbar */
+    padding: 0 1em; /* Padding orizzontale simile a quello della pagina summary */
 }
 
 #navbar ul {
-    list-style-type: none;
-    margin: 0;
+    list-style: none;
     padding: 0;
+    margin: 0;
     display: flex;
-    align-items: center;
+    justify-content: space-between; /* Spaziatura equidistante tra i pulsanti */
+    align-items: center; /* Allinea verticalmente i pulsanti */
 }
 
-#navbar .left, #navbar .right {
-    display: flex;
+#navbar li {
+    margin: 0 8px; /* Margine simile a quello della pagina summary */
 }
 
-#navbar .left {
-    flex: 1; /* Occupy available space on the left */
-    justify-content: flex-start; /* Align items to the left */
-}
-
-#navbar .right {
-    flex: 1; /* Occupy available space on the right */
-    justify-content: flex-end; /* Align items to the right */
-}
-
-#navbar ul li {
-    margin-left: 0.5em; /* Ridotto il margine tra i link */
-}
-
-#navbar ul li a {
-    background-color: white; /* Colore di base bianco */
-    color: #333 !important; /* Colore del testo scuro, !important per sovrascrivere altri stili */
+#navbar a {
     text-decoration: none;
-    padding: 0.3em 0.6em;
+    color: white;
+    font-weight: bold;
+    padding: 3px 7px; /* Padding simile a quello della pagina summary */
+    border-radius: 4px; /* Border-radius simile a quello della pagina summary */
+    transition: background-color 0.3s;
+    font-size: 14px; /* Dimensione del font simile a quella della pagina summary */
 }
-    #navbar ul li a:hover {
-        background-color: #f8f9fa; /* Colore di sfondo al passaggio del mouse */
-        border-color: #bbb; /* Colore del bordo al passaggio del mouse */
-    }
 
-    /* Stili specifici per il carrello */
-    main {
-        padding: 2em;
-        background-color: #f9f9f9;
-    }
+#navbar a:hover {
+    background-color: #0056b3; /* Colore di hover simile a quello della pagina summary */
+}
 
-    h1 {
-        color: #333;
-    }
+main {
+    padding: 20px; /* Padding simile a quello della pagina summary */
+    background-color: #f4f4f4; /* Colore di sfondo simile a quello della pagina summary */
+}
 
-    #cart-items-container {
-        background-color: #fff;
-        padding: 2em;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+h1 {
+    color: #0056b3; /* Colore del testo simile a quello della pagina summary */
+}
 
-    .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #ccc;
-        padding: 1em 0;
-    }
+#cart-items-container {
+    background-color: #fff;
+    padding: 20px; /* Padding simile a quello delle card della pagina summary */
+    border-radius: 10px; /* Border-radius simile a quello delle card della pagina summary */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box-shadow simile a quello delle card della pagina summary */
+}
 
-    .cart-item h3 {
-        margin: 0;
-    }
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd; /* Colore del bordo simile a quello della pagina summary */
+    padding: 10px 0; /* Padding simile a quello delle card della pagina summary */
+}
 
-    .cart-item p {
-        margin: 0.5em 0;
-    }
+.cart-item h3 {
+    margin: 0;
+    color: #0056b3; /* Colore del testo simile a quello della pagina summary */
+}
 
-    .cart-item button {
-        background-color: #d9534f;
-        color: white;
-        border: none;
-        padding: 0.5em 1em;
-        cursor: pointer;
-        border-radius: 4px;
-    }
+.cart-item p {
+    margin: 5px 0;
+}
 
-    .cart-item button:hover {
-        background-color: #c9302c;
-    }
+/* Contenitore per i pulsanti */
+.button-container {
+    display: flex; /* Assicura che i pulsanti siano visualizzati in linea */
+    gap: 10px; /* Spazio tra i pulsanti */
+    margin-top: 20px; /* Margine superiore per separare i pulsanti dal contenuto */
+    justify-content: flex-start; /* Allinea i pulsanti a sinistra */
+}
 
-    .cart-total {
-        font-weight: bold;
-        font-size: 1.2em;
-        text-align: right;
-        margin-top: 1em;
-    }
+/* Pulsanti nella sezione carrello */
+.cart-item button, #checkout-button {
+    background-color: #0056b3; /* Colore di sfondo simile a quello dei pulsanti della pagina summary */
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Padding simile a quello dei pulsanti della pagina summary */
+    border-radius: 5px; /* Border-radius simile a quello dei pulsanti della pagina summary */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; /* Transizione simile a quella dei pulsanti della pagina summary */
+    margin: 0; /* Assicura che non ci siano margini aggiuntivi */
+}
+
+.cart-item button:hover, #checkout-button:hover {
+    background-color: #004494; /* Colore di hover simile a quello dei pulsanti della pagina summary */
+    transform: scale(1.05); /* Effetto di hover simile a quello dei pulsanti della pagina summary */
+}
+
+.cart-total {
+    font-weight: bold;
+    font-size: 1.2em;
+    text-align: right;
+    margin-top: 20px; /* Margine superiore simile a quello della pagina summary */
+}

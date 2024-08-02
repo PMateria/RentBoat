@@ -359,3 +359,17 @@ margin-top: 8px;
 .confirm-button:hover {
   background-color: #0056b3;
 }
+
+.add-to-cart-button {
+  background-color: #28a745; /* Verde */
+  color: white;
+  border: none; /* Rimuove il bordo */
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 4px; /* Angoli arrotondati */
+  transition: background-color 0.3s; /* Transizione per l'hover */
+}
+
+.add-to-cart-button:hover {
+  background-color: #218838; /* Verde scuro per hover */
+}

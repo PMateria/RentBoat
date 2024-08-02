@@ -306,3 +306,46 @@ form button:hover {
     background-color: #c0392b;
     transform: scale(1.05);
 }
+#boat-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.boat-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    width: 200px;
+    text-align: center;
+}
+
+.boat-item.not-available {
+    background-color: #f9f9f9;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.boat-item button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.boat-item button:hover {
+    background-color: #004494;
+}
+
+.boat-item.not-available button {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+.boat-card.not-available {
+    opacity: 0.5;
+    pointer-events: none;
+}

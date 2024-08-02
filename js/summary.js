@@ -5,15 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadSummaryData() {
     const summaryContainer = document.getElementById('summary-container');
     const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
+    const userId = sessionStorage.getItem('userId'); // Ottieni l'ID utente dalla sessione
 
-    if (loanedBoats.length === 0) {
+    // Filtra le barche in base all'ID utente
+    const userLoanedBoats = loanedBoats.filter(boat => boat.userId === userId);
+
+    if (userLoanedBoats.length === 0) {
         summaryContainer.innerHTML = '<p>Non ci sono barche prese in prestito.</p>';
         return;
     }
 
     summaryContainer.innerHTML = '';
 
-    loanedBoats.forEach(boat => {
+    userLoanedBoats.forEach(boat => {
         const summaryItem = document.createElement('div');
         summaryItem.className = 'summary-item';
         summaryItem.innerHTML = `
