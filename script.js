@@ -1,17 +1,27 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  
+  const currentPath = window.location.href;
+  if (currentPath === 'http://localhost:8081/') {
+    document.body.classList.add('special-background');
+  } else {
+    document.body.classList.remove('special-background');
+  }
+  if (currentPath === '/index.html') {
+    window.location.href = '/';
+    return; // Ferma l'esecuzione del resto dello script
+  }
   const leftNav = document.getElementById('left-nav');
   const rightNav = document.getElementById('right-nav');
 
-  
   let jwtToken = sessionStorage.getItem('jwtToken');
   let userId = sessionStorage.getItem('userId');
+  let isAuthenticated = !!jwtToken; // Booleano che indica se l'utente è autenticato
   
-  if (jwtToken) {
+  if (isAuthenticated) {
     try {
       const payload = JSON.parse(atob(jwtToken.split('.')[1]));
       userId = payload.sub;
       const roles = payload.roles;
-      
       
       // Add other links
       const cartLink = document.createElement('ul');
@@ -48,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.location.pathname.includes('html/cart.html')) {
     fetchCartItems();
   } else if (!window.location.pathname.includes('html/summary.html')) {
-    await loadBoats();
+    await loadBoats(isAuthenticated);
   }
   
   addHomeButton();
@@ -298,6 +308,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       const removeButton = document.createElement('button');
       removeButton.textContent = 'Rimuovi';
+      removeButton.style.backgroundColor = 'red';  // Imposta il colore di sfondo a rosso
+
       removeButton.addEventListener('click', () => removeCartItem(item.boatId));
       
       cartItem.appendChild(itemDetails);
@@ -350,111 +362,113 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   
-  async function loadBoats() {
+  async function loadBoats(isAuthenticated) {
     try {
       const response = await fetch('http://localhost:8080/barche/allBoats');
       if (!response.ok) {
         throw new Error('Errore nel recupero delle barche');
       }
       const data = await response.json();
-      renderBoats(data);
+      renderBoats(data, isAuthenticated); // Passa isAuthenticated qui
     } catch (error) {
       console.error('Errore durante il recupero delle barche:', error);
     }
   }
   
-  function renderBoats(data) {
+  function renderBoats(data, isAuthenticated) {
     const boatsList = document.getElementById('boats-list');
-    
+
     if (!boatsList) {
-      console.error('Elemento con ID "boats-list" non trovato');
-      return;
+        console.error('Elemento con ID "boats-list" non trovato');
+        return;
     }
-    
+
     boatsList.innerHTML = '';
-    
+
     data.forEach(boat => {
-      const boatCard = document.createElement('div');
-      boatCard.className = 'boat-card';
-      boatCard.dataset.id = boat.id;
-      
-      const boatImage = document.createElement('img');
-      const imageUrl = boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
-      
-      boatImage.src = imageUrl;
-      boatImage.alt = boat.name;
-      
-      boatImage.className = 'boat-image';
-      
-      boatImage.onerror = () => {
-        boatImage.src = 'https://via.placeholder.com/150'; // URL di fallback per errori di caricamento
-      };
-      
-      boatImage.onload = () => {
-        console.log('Immagine caricata con successo:', imageUrl);
-      };
-      
-      const boatDetails = document.createElement('div');
-      boatDetails.className = 'boat-details';
-      
-      const boatName = document.createElement('h2');
-      boatName.textContent = boat.name;
-      boatName.style.color= 'red';
-      
-      const boatDescription = document.createElement('p');
-      boatDescription.innerHTML = `<strong>${boat.description}</strong>`;
-      boatDescription.style.color= 'black';
+        const boatCard = document.createElement('div');
+        boatCard.className = 'boat-card';
+        boatCard.dataset.id = boat.id;
 
-      
-      const boatPrice = document.createElement('p');
-      boatPrice.className = 'boat-price';
-      boatPrice.textContent = `Price: ${boat.price} EUR`;
-      
-      const flags = document.createElement('div');
-      flags.className = 'flags';
-      
-      if (window.location.pathname.includes('html/admin.html')) {
-        const deleteButton = document.createElement('button');
-        deleteButton.className = 'delete-boat-button';
-        deleteButton.setAttribute('data-id', boat.id);
-        deleteButton.addEventListener('click', async () => {
-          await deleteBoat(boat.id);
-        });
-        flags.appendChild(deleteButton);
-      } else {
-        const addToCartButton = document.createElement('button');
-        addToCartButton.className = 'flag blue-flag';
-        addToCartButton.textContent = 'Aggiungi al carrello';
-        addToCartButton.style.color = 'black'; // Imposta il colore a rosso in caso di errore
+        const boatImage = document.createElement('img');
+        const imageUrl = boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
 
-        
-        addToCartButton.addEventListener('click', () => {
-          addToCart(boat.id);
-        });
-        
-        const purchaseButton = document.createElement('button');
-        purchaseButton.className = 'flag green-flag';
-        purchaseButton.textContent = 'Acquista';
-        
-        purchaseButton.addEventListener('click', () => {
-          handlePurchase(boat.id);
-        });
-        
-        flags.appendChild(addToCartButton);
-        flags.appendChild(purchaseButton);
-      }
-      
-      boatDetails.appendChild(boatName);
-      boatDetails.appendChild(boatDescription);
-      boatDetails.appendChild(boatPrice);
-      boatDetails.appendChild(flags);
-      
-      boatCard.appendChild(boatImage);
-      boatCard.appendChild(boatDetails);
-      
-      boatsList.appendChild(boatCard);
+        boatImage.src = imageUrl;
+        boatImage.alt = boat.name;
+        boatImage.className = 'boat-image';
+
+        boatImage.onerror = () => {
+            boatImage.src = 'https://via.placeholder.com/150'; // URL di fallback per errori di caricamento
+        };
+
+        boatImage.onload = () => {
+            console.log('Immagine caricata con successo:', imageUrl);
+        };
+
+        const boatDetails = document.createElement('div');
+        boatDetails.className = 'boat-details';
+
+        const boatName = document.createElement('h2');
+        boatName.textContent = boat.name;
+        boatName.style.color = 'red';
+
+        const boatDescription = document.createElement('p');
+        boatDescription.innerHTML = `<strong>${boat.description}</strong>`;
+        boatDescription.style.color = 'black';
+
+        const boatPrice = document.createElement('p');
+        boatPrice.className = 'boat-price';
+        boatPrice.textContent = `Price: ${boat.price} EUR`;
+
+        // Aggiungi il numero di posti
+        const boatPlaces = document.createElement('p');
+        boatPlaces.className = 'boat-places';
+        boatPlaces.textContent = `Posti disponibili: ${boat.places}`;
+
+        const flags = document.createElement('div');
+        flags.className = 'flags';
+
+        if (isAuthenticated) {
+            const addToCartButton = document.createElement('button');
+            addToCartButton.className = 'flag blue-flag';
+            addToCartButton.textContent = 'Aggiungi al carrello';
+            addToCartButton.style.color = 'black'; // Imposta il colore a rosso in caso di errore
+
+            addToCartButton.addEventListener('click', () => {
+                addToCart(boat.id);
+            });
+
+            const purchaseButton = document.createElement('button');
+            purchaseButton.className = 'flag green-flag';
+            purchaseButton.textContent = 'Affitta';
+
+            purchaseButton.addEventListener('click', () => {
+                handlePurchase(boat.id);
+            });
+
+            flags.appendChild(addToCartButton);
+            flags.appendChild(purchaseButton);
+        } else {
+            // Se non autenticato, non aggiungere i pulsanti
+            const loginPrompt = document.createElement('p');
+            loginPrompt.style.color = 'red';
+            flags.appendChild(loginPrompt);
+        }
+
+        boatDetails.appendChild(boatName);
+        boatDetails.appendChild(boatDescription);
+        boatDetails.appendChild(boatPrice);
+        boatDetails.appendChild(boatPlaces); // Aggiungi il numero di posti
+        boatDetails.appendChild(flags);
+
+        boatCard.appendChild(boatImage);
+        boatCard.appendChild(boatDetails);
+
+        boatsList.appendChild(boatCard);
     });
-  }
+}
+
+
   
   async function deleteBoat(boatId) {
     try {
@@ -479,16 +493,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     event.preventDefault();
     sessionStorage.clear();
     localStorage.removeItem('cart');
-
+  
     const remainingCart = localStorage.getItem('cart');
-
+  
     if (remainingCart) {
       console.log('Cart still exists, forcing clear');
       localStorage.setItem('cart', '[]');
       console.log('Cart forcibly cleared');
     }
+    
+    // Reindirizza alla radice del sito
     setTimeout(() => {
-      window.location.href = '/index.html';
+      window.location.href = '/'; // Reindirizza alla radice del sito
     }, 100);
   }
   

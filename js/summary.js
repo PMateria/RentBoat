@@ -21,11 +21,11 @@ function loadSummaryData() {
         const summaryItem = document.createElement('div');
         summaryItem.className = 'summary-item';
         summaryItem.innerHTML = `
+            <img src="${boat.imageURL}" alt="${boat.name}">
             <h2>${boat.name}</h2>
-            <p>Prezzo: ${boat.price}</p>
-            <p>Data e ora di ritiro: ${new Date(boat.pickupDateTime).toLocaleString()}</p>
-            <p>Data e ora di consegna: ${new Date(boat.returnDateTime).toLocaleString()}</p>
-            <img src="${boat.imageURL}" alt="${boat.name}" class="summary-image">
+            <p class="price">Prezzo: ${boat.price}</p>
+            <p class="date">Data e ora di ritiro: ${new Date(boat.pickupDateTime).toLocaleString()}</p>
+            <p class="date">Data e ora di consegna: ${new Date(boat.returnDateTime).toLocaleString()}</p>
         `;
         summaryContainer.appendChild(summaryItem);
     });

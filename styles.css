@@ -373,3 +373,16 @@ margin-top: 8px;
 .add-to-cart-button:hover {
   background-color: #218838; /* Verde scuro per hover */
 }
+
+.special-background {
+  background-image: url('https://www.yamahaboats.com/globalassets/media/my24/boats/mobile/hero-image-boats.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.boat-places {
+  font-weight: bold;
+  margin-top: 8px;
+  color: #333;
+}
