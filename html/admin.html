@@ -1,0 +1,65 @@
+    <!DOCTYPE html>
+    <html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Page</title>
+        <link rel="stylesheet" href="../css/admin.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    </head>
+    <body>
+    <header>
+        <nav id="navbar">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="/html/cart.html">Carrello</a></li>
+                <li><a href="/html/admin.html">Admin</a></li>
+                <li><a href="#" id="logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Admin Dashboard</h1>
+        <div id="adminContent">
+            <div class="section">
+                <h2>Aggiungi una nuova barca</h2>
+                <form id="addBoatForm">
+                    <input type="text" name="name" placeholder="Nome" required>
+                    <input type="text" name="description" placeholder="Descrizione" required>
+                    <input type="number" name="places" placeholder="Posti" required>
+                    <input type="number" name="price" placeholder="Prezzo" required>
+                    <button type="submit" id="addBoatButton">Aggiungi Barca</button>
+
+                </form>
+            </div>
+
+            <div class="section">
+                <h2>Lista Barche</h2>
+                <div id="boats-list">
+                    <!-- La lista delle barche verrà inserita qui -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Lista Utenti</h2>
+                <div id="users-list">
+                    <!-- La lista degli utenti verrà inserita qui -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../script.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        document.getElementById('logout').addEventListener('click', function(event) {
+            event.preventDefault();
+            sessionStorage.removeItem('jwtToken');
+            sessionStorage.removeItem('userId');
+            window.location.href = '../index.html';
+        });
+    </script>
+    </body>
+    </html>

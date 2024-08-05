@@ -1,0 +1,207 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333; /* Colore scuro per la navbar */
+    color: white;
+    padding: 10px 0; /* Allineato con il padding della navbar nella pagina summary */
+}
+
+#navbar {
+    background: linear-gradient(135deg, #333, #5a5959); /* Gradiente simile a quello della pagina summary */
+    color: #fff;
+    display: flex;
+    justify-content: space-between; /* Allinea gli elementi della navbar */
+    align-items: center; /* Allinea verticalmente gli elementi della navbar */
+    padding: 0 1em; /* Padding orizzontale simile a quello della pagina summary */
+}
+
+#navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between; /* Spaziatura equidistante tra i pulsanti */
+    align-items: center; /* Allinea verticalmente i pulsanti */
+}
+
+#navbar li {
+    margin: 0 8px; /* Margine simile a quello della pagina summary */
+}
+
+#navbar a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    padding: 3px 7px; /* Padding simile a quello della pagina summary */
+    border-radius: 4px; /* Border-radius simile a quello della pagina summary */
+    transition: background-color 0.3s;
+    font-size: 14px; /* Dimensione del font simile a quella della pagina summary */
+}
+
+#navbar a:hover {
+    background-color: #0056b3; /* Colore di hover simile a quello della pagina summary */
+}
+
+main {
+    padding: 20px; /* Padding simile a quello della pagina summary */
+    background-color: #f4f4f4; /* Colore di sfondo simile a quello della pagina summary */
+}
+
+h1 {
+    color: #0056b3; /* Colore del testo simile a quello della pagina summary */
+}
+
+#cart-items-container {
+    background-color: #fff;
+    padding: 20px; /* Padding simile a quello delle card della pagina summary */
+    border-radius: 10px; /* Border-radius simile a quello delle card della pagina summary */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box-shadow simile a quello delle card della pagina summary */
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd; /* Colore del bordo simile a quello della pagina summary */
+    padding: 10px 0; /* Padding simile a quello delle card della pagina summary */
+}
+
+.cart-item h3 {
+    margin: 0;
+    color: #0056b3; /* Colore del testo simile a quello della pagina summary */
+}
+
+.cart-item p {
+    margin: 5px 0;
+}
+
+/* Nuova regola per il colore del nome della barca */
+.summary-item h2 {
+    color: red; /* Colore rosso per il nome della barca */
+}
+
+/* Nuova regola per il prezzo in grassetto e nero */
+.summary-item p.price {
+    font-weight: bold; /* Imposta il testo in grassetto */
+    color: black; /* Colore del testo nero */
+}
+
+/* Contenitore per i pulsanti */
+.button-container {
+    display: flex; /* Assicura che i pulsanti siano visualizzati in linea */
+    gap: 10px; /* Spazio tra i pulsanti */
+    margin-top: 20px; /* Margine superiore per separare i pulsanti dal contenuto */
+    justify-content: flex-start; /* Allinea i pulsanti a sinistra */
+}
+
+/* Pulsanti nella sezione carrello */
+.cart-item button, #checkout-button {
+    background-color: #0056b3; /* Colore di sfondo simile a quello dei pulsanti della pagina summary */
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Padding simile a quello dei pulsanti della pagina summary */
+    border-radius: 5px; /* Border-radius simile a quello dei pulsanti della pagina summary */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; /* Transizione simile a quella dei pulsanti della pagina summary */
+    margin: 0; /* Assicura che non ci siano margini aggiuntivi */
+}
+
+.cart-item button:hover, #checkout-button:hover {
+    background-color: #004494; /* Colore di hover simile a quello dei pulsanti della pagina summary */
+    transform: scale(1.05); /* Effetto di hover simile a quello dei pulsanti della pagina summary */
+}
+
+.cart-total {
+    font-weight: bold;
+    font-size: 1.2em;
+    text-align: right;
+    margin-top: 20px; /* Margine superiore simile a quello della pagina summary */
+}
+/* Stile per le card delle barche */
+.summary-item {
+    background-color: #fff; /* Colore di sfondo bianco per la card */
+    border-radius: 10px; /* Angoli arrotondati */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombra della card */
+    overflow: hidden; /* Nasconde le parti che escono fuori dagli angoli arrotondati */
+    margin-bottom: 20px; /* Spazio tra le card */
+    padding: 20px; /* Spazio interno della card */
+    display: flex; /* Dispone il contenuto della card in orizzontale */
+    flex-direction: column; /* Gli elementi sono disposti in colonna */
+    align-items: center; /* Allinea gli elementi al centro */
+}
+
+.summary-item img {
+    width: 50%; /* Imposta la larghezza dell'immagine al 50% della larghezza della card */
+    height: auto; /* Mantiene le proporzioni dell'immagine */
+    max-width: 300px; /* Limita la larghezza massima a 300px */
+    border-bottom: 1px solid #ddd; /* Bordi inferiore della card */
+}
+
+.summary-item h2 {
+    color: red; /* Colore rosso per il nome della barca */
+    margin: 10px 0; /* Spazio sopra e sotto il titolo */
+}
+
+.summary-item p {
+    margin: 5px 0; /* Spazio sopra e sotto i paragrafi */
+}
+
+.summary-item p.price {
+    font-weight: bold; /* Prezzo in grassetto */
+    color: black; /* Prezzo in nero */
+}
+
+.summary-item p.date {
+    color: #555; /* Colore del testo per le date */
+}
+
+/* Contenitore per le card */
+#summary-container {
+    display: flex; /* Usa Flexbox per disporre le card in orizzontale */
+    flex-wrap: wrap; /* Permette che le card vadano a capo se non c'è spazio sufficiente */
+    gap: 20px; /* Spazio tra le card */
+    justify-content: space-between; /* Allinea le card con spazio equidistante */
+}
+
+/* Stile per le card delle barche */
+.summary-item {
+    background-color: #fff; /* Colore di sfondo bianco per la card */
+    border-radius: 10px; /* Angoli arrotondati */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Ombra della card */
+    overflow: hidden; /* Nasconde le parti che escono fuori dagli angoli arrotondati */
+    padding: 20px; /* Spazio interno della card */
+    display: flex; /* Dispone il contenuto della card in orizzontale */
+    flex-direction: column; /* Gli elementi sono disposti in colonna */
+    align-items: center; /* Allinea gli elementi al centro */
+    width: calc(33.333% - 20px); /* Larghezza della card per tre card affiancate con gap di 20px */
+    box-sizing: border-box; /* Include padding e bordo nel calcolo della larghezza */
+}
+
+.summary-item img {
+    width: 50%; /* Imposta la larghezza dell'immagine al 50% della larghezza della card */
+    height: auto; /* Mantiene le proporzioni dell'immagine */
+    max-width: 300px; /* Limita la larghezza massima a 300px */
+    border-bottom: 1px solid #ddd; /* Bordi inferiore della card */
+}
+
+.summary-item h2 {
+    color: red; /* Colore rosso per il nome della barca */
+    margin: 10px 0; /* Spazio sopra e sotto il titolo */
+}
+
+.summary-item p {
+    margin: 5px 0; /* Spazio sopra e sotto i paragrafi */
+}
+
+.summary-item p.price {
+    font-weight: bold; /* Prezzo in grassetto */
+    color: black; /* Prezzo in nero */
+}
+
+.summary-item p.date {
+    color: #555; /* Colore del testo per le date */
+}
