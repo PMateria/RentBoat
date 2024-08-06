@@ -8,10 +8,25 @@ body {
 }
 
 /* Stile per la navbar */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #ffffff; /* Colore scuro per la navbar */
+    color: white;
+    padding: 10px 0; /* Allineato con il padding della navbar nella pagina summary */
+}
+
+
 #navbar {
-    background: linear-gradient(135deg, #333, #5a5959); /* Gradiente dal viola scuro al viola chiaro */
     color: #fff;
-    padding: 10px 0;
+    display: flex;
+    justify-content: space-between; /* Allinea gli elementi della navbar come nella pagina summary */
+    align-items: center; /* Allinea verticalmente gli elementi della navbar */
+    padding: 0 1em; /* Padding orizzontale simile a quello della pagina summary */
 }
 
 #navbar ul {
@@ -19,38 +34,26 @@ body {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: space-around;
-    align-items: center;
+    justify-content: space-between; /* Spaziatura equidistante tra i pulsanti */
+    align-items: center; /* Allinea verticalmente i pulsanti */
 }
 
 #navbar li {
-    margin: 0 8px; /* Ridotto il margine tra gli elementi della navbar */
+    margin: 0 8px; /* Margine simile a quello della pagina summary */
 }
 
 #navbar a {
     text-decoration: none;
-    color: white;
+    color: #000000;
     font-weight: bold;
-    padding: 3px 7px; /* Ridotto il padding interno dei link */
-    display: inline-block;
-    border-radius: 4px; /* Ridotto il border-radius */
+    padding: 3px 7px; /* Padding simile a quello della pagina summary */
+    border-radius: 4px; /* Border-radius simile a quello della pagina summary */
     transition: background-color 0.3s;
-    font-size: 14px; /* Ridotto la dimensione del font */
+    font-size: 14px; /* Dimensione del font simile a quella della pagina summary */
 }
 
 #navbar a:hover {
-    background-color: #0056b3;
-}
-
-
-/* Stile per il contenuto principale */
-main {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 20px auto;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #0056b3; /* Colore di hover simile a quello della pagina summary */
 }
 
 h1 {

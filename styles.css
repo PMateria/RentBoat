@@ -1,3 +1,4 @@
+/* Imposta lo stile del body */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -9,45 +10,38 @@ body {
   background-attachment: fixed;
 }
 
+/* Stile per la navbar */
 header {
-  background-color: rgba(255, 255, 255, 0.5); /* 0.5 rappresenta il 50% di opacità */
-  padding: 10px 0;
-  border: none;
-  box-shadow: none;
-}
-nav {
-  background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: space-between;
+.navbar {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(5px);
+  transition: background-color 0.3s ease;
 }
 
-nav ul .left,
-nav ul .right {
-  display: flex;
-  gap: 20px;
+.navbar:hover {
+  background-color: rgba(255, 255, 255, 0.9) !important;
 }
 
-nav ul li a {
-  text-decoration: none;
-  color: #000;
-  font-weight: bold;
+.navbar-nav .nav-link,
+.navbar-nav .nav-item > a {
+  color: #000000 !important; /* o il colore che preferisci */
+  text-decoration: none !important;
 }
 
-nav ul li a:hover,
-nav ul li a:focus {
-  color: #ffcc00;
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-item > a:hover {
+  color: #ffffff !important; /* colore per l'hover, cambialo se necessario */
+  text-decoration: none !important;
 }
 
-nav ul li {
-  margin-right: 15px;
-}
-
+/* Stile per gli h1 e h2 */
 h1, .section h2 {
   color: red;
   text-align: center;
@@ -70,50 +64,49 @@ h1, .section h2 {
   color: red;
 }
 
-/* Modifica per la Lista Barche */
-/* Imposta il layout delle card per assicurarti che non si sovrappongano */
+/* Stile per le card delle barche */
 #boats-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px; /* Spazio tra le card */
-    padding: 15px; /* Spazio interno al contenitore */
-    box-sizing: border-box; /* Include padding e border nel calcolo della larghezza */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Spazio tra le card */
+  padding: 15px; /* Spazio interno al contenitore */
+  box-sizing: border-box; /* Include padding e border nel calcolo della larghezza */
 }
 
 .boat-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-    width: calc(20% - 30px); /* Cinque card per riga su schermi più grandi */
-    box-sizing: border-box;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    min-width: 200px; /* Imposta una larghezza minima per la card */
+  border: 1px solid #ddd;
+  padding: 10px;
+  width: 150px
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.5); /* Colore di sfondo bianco con 50% di trasparenza */
+  border-radius: 30px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 150px; /* Imposta una larghezza minima per la card */
+  margin-top: 100px; /* Puoi regolare il valore in base a quanto vuoi spostare in basso */
 }
 
-/* Adatta le card per schermi più piccoli */
 @media (max-width: 1200px) {
-    .boat-card {
-        width: calc(25% - 30px); /* Quattro card per riga */
-    }
+  .boat-card {
+    width: calc(25% - 30px); /* Quattro card per riga */
+  }
 }
 
 @media (max-width: 768px) {
-    .boat-card {
-        width: calc(33.33% - 30px); /* Tre card per riga */
-    }
+  .boat-card {
+    width: calc(33.33% - 30px); /* Tre card per riga */
+  }
 }
 
 @media (max-width: 480px) {
-    .boat-card {
-        width: calc(50% - 30px); /* Due card per riga */
-    }
+  .boat-card {
+    width: calc(50% - 30px); /* Due card per riga */
+  }
 }
 
 @media (max-width: 360px) {
-    .boat-card {
-        width: calc(100% - 30px); /* Una card per riga */
-    }
+  .boat-card {
+    width: calc(100% - 30px); /* Una card per riga */
+  }
 }
 
 .boat-card:hover {
@@ -194,7 +187,6 @@ h1, .section h2 {
   color: #fff;
   border: none;
   border-radius: 4px;
-
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 0.875rem;
@@ -286,119 +278,52 @@ margin-top: 8px;
   box-sizing: border-box;
   background-color: #f9f9f9;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0,
+  ChatGPT
+  0.1);
   min-width: 200px; /* Imposta una larghezza minima per la card */
+  margin-top: 20px;
 }
 
-/* Adatta le card per schermi più piccoli */
-@media (max-width: 1200px) {
-  .reservation-card {
-      width: calc(25% - 30px); /* Quattro card per riga */
-  }
-}
-
-@media (max-width: 768px) {
-  .reservation-card {
-      width: calc(33.33% - 30px); /* Tre card per riga */
-  }
-}
-
-@media (max-width: 480px) {
-  .reservation-card {
-      width: calc(50% - 30px); /* Due card per riga */
-  }
-}
-
-@media (max-width: 360px) {
-  .reservation-card {
-      width: calc(100% - 30px); /* Una card per riga */
-  }
-}
-
-.reservation-card:hover {
+.reservation-card
+{
   transform: scale(1.02);
 }
 
-.date-selection-form {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 15px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.reservation-details {
+padding: 8px 0;
 }
 
-.date-selection-form h3 {
-  margin-bottom: 15px;
-  color: #333;
-  font-size: 1.2em;
+.reservation-price {
+font-weight: bold;
+margin-top: 8px;
+color: #28a745;
 }
 
-.form-group {
-  margin-bottom: 15px;
+.table-container {
+width: 100%;
+margin-top: 100px;
+overflow-x: auto;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #495057;
-}
-
-.form-group input[type="date"],
-.form-group input[type="time"] {
+.boat-table {
   width: 100%;
+  border-collapse: collapse;
+}
+
+.boat-table th, .boat-table td {
+  border: 1px solid #ddd;
   padding: 8px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  font-size: 16px;
+  text-align: left;
 }
 
-.confirm-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s;
+.boat-table th {
+  background-color: #f2f2f2;
 }
 
-.confirm-button:hover {
-  background-color: #007bff;
+
+.boat-table tr
+{
+  background-color: #f1f1f1;
 }
 
-.add-to-cart-button {
-  background-color: #28a745; /* Verde */
-  color: white;
-  border: none; /* Rimuove il bordo */
-  padding: 0.5em 1em;
-  cursor: pointer;
-  border-radius: 4px; /* Angoli arrotondati */
-  transition: background-color 0.3s; /* Transizione per l'hover */
-}
-
-.add-to-cart-button:hover {
-  background-color: #218838; /* Verde scuro per hover */
-}
-
-.special-background {
-  background-image: url('https://www.yamahaboats.com/globalassets/media/my24/boats/mobile/hero-image-boats.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
-.boat-places {
-  font-weight: bold;
-  margin-top: 8px;
-  color: #333;
-}
-
-.navbar-nav > li {
-    margin-right: 15px;
-}
-.navbar-nav > li:last-child {
-    margin-right: 0;
-}

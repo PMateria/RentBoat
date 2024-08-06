@@ -100,7 +100,8 @@ button {
 
 /* Colore di sfondo del pulsante al passaggio del mouse */
 button:hover {
-    background: #0055cc; /* Blu più scuro al passaggio del mouse */
+    background: #ffffff; /* Cambia sfondo in blu */
+    color: #0044CC; /* Cambia colore testo in bianco */
 }
 
 /* Sezione di login quando il checkbox è selezionato */

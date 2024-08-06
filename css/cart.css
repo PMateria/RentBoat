@@ -5,13 +5,13 @@ body {
 }
 
 header {
-    background-color: #333; /* Colore scuro per la navbar */
+    background-color: #ffffff; /* Colore scuro per la navbar */
     color: white;
     padding: 10px 0; /* Allineato con il padding della navbar nella pagina summary */
 }
 
+
 #navbar {
-    background: linear-gradient(135deg, #333, #5a5959); /* Gradiente simile a quello della pagina summary */
     color: #fff;
     display: flex;
     justify-content: space-between; /* Allinea gli elementi della navbar come nella pagina summary */

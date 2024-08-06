@@ -5,18 +5,18 @@ body {
 }
 
 header {
-    background-color: #333; /* Colore scuro per la navbar */
+    background-color: #ffffff; /* Colore chiaro per la navbar */
     color: white;
     padding: 10px 0; /* Allineato con il padding della navbar nella pagina summary */
 }
 
+
 #navbar {
-    background: linear-gradient(135deg, #333, #5a5959); /* Gradiente simile a quello della pagina summary */
     color: #fff;
     display: flex;
-    justify-content: space-between; /* Allinea gli elementi della navbar */
+    justify-content: space-between; /* Allinea gli elementi della navbar  */
     align-items: center; /* Allinea verticalmente gli elementi della navbar */
-    padding: 0 1em; /* Padding orizzontale simile a quello della pagina summary */
+    padding: 0 1em; /* Padding orizzontale */
 }
 
 #navbar ul {
@@ -29,21 +29,21 @@ header {
 }
 
 #navbar li {
-    margin: 0 8px; /* Margine simile a quello della pagina summary */
+    margin: 0 8px; /* Margine */
 }
 
 #navbar a {
     text-decoration: none;
     color: white;
     font-weight: bold;
-    padding: 3px 7px; /* Padding simile a quello della pagina summary */
-    border-radius: 4px; /* Border-radius simile a quello della pagina summary */
+    padding: 3px 7px; /* Padding navbar */
+    border-radius: 4px; /* Border-radius  */
     transition: background-color 0.3s;
-    font-size: 14px; /* Dimensione del font simile a quella della pagina summary */
+    font-size: 14px; /* Dimensione del font  */
 }
 
 #navbar a:hover {
-    background-color: #0056b3; /* Colore di hover simile a quello della pagina summary */
+    background-color: #0056b3; /* Colore di hover  */
 }
 
 main {
