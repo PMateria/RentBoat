@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     addHomeButton();
 
 
-    async function addToCart(boatId) {
+    function addToCart(boatId) {
         try {
             console.log(`Tentativo di aggiungere la barca con ID: ${boatId}`);
             debugLocalStorage();
@@ -120,50 +120,101 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
+            // Disabilita entrambi i pulsanti
+            disableButtons(boatId);
+
             // Mostra il form per la selezione delle date
-            showDateSelectionForm(boatId);
+            showDateSelectionForm(boatId, 'cart');
         } catch (error) {
             console.error('Errore durante l\'aggiunta al carrello:', error);
             alert(`Errore durante l'aggiunta al carrello: ${error.message}`);
         }
     }
 
-
-    function isBoatAvailable(boatId) {
-        const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
-        const now = new Date();
-
-        // Controlla se la barca è già in prestito e se la data di consegna non è ancora passata
-        const isBoatLoaned = loanedBoats.some(boat => {
-            return boat.boatId === boatId && new Date(boat.returnDateTime) > now;
-        });
-
-        return !isBoatLoaned;
+    function disableAddToCartButton(boatId) {
+        const addToCartButton = document.querySelector(`.boat-card[data-id="${boatId}"] .blue-flag`);
+        if (addToCartButton) {
+            addToCartButton.disabled = true;
+            addToCartButton.style.opacity = '0.5';
+            addToCartButton.style.cursor = 'not-allowed';
+        }
     }
 
-    function showDateSelectionForm(boatId) {
+    function enableAddToCartButton(boatId) {
+        const addToCartButton = document.querySelector(`.boat-card[data-id="${boatId}"] .blue-flag`);
+        if (addToCartButton) {
+            addToCartButton.disabled = false;
+            addToCartButton.style.opacity = '1';
+            addToCartButton.style.cursor = 'pointer';
+        }
+    }
+
+
+    function isBoatAvailable(boatId) {
+        const loanedBoats = loadLoanedBoatsState();
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const now = new Date();
+
+        // Controlla le barche noleggiate
+        const isLoanedAndUnavailable = loanedBoats.some(boat =>
+        boat.boatId === boatId && new Date(boat.returnDateTime) > now
+        );
+
+        // Controlla il carrello
+        const isInCartAndUnavailable = cart.some(item =>
+        item.boatId === boatId && new Date(item.pickupDateTime) > now
+        );
+
+        return !isLoanedAndUnavailable && !isInCartAndUnavailable;
+    }
+
+    //  Funzione per aggiornare lo stato delle barche e l'interfaccia utente
+    function updateBoatsState() {
+        saveLoanedBoatsState();
+        const boatCards = document.querySelectorAll('.boat-card');
+        boatCards.forEach(card => {
+            const boatId = card.dataset.id;
+            const addToCartButton = card.querySelector('.blue-flag');
+            const purchaseButton = card.querySelector('.green-flag');
+
+            if (isBoatAvailable(boatId)) {
+                addToCartButton.disabled = false;
+                purchaseButton.disabled = false;
+                addToCartButton.style.opacity = '1';
+                purchaseButton.style.opacity = '1';
+            } else {
+                addToCartButton.disabled = true;
+                purchaseButton.disabled = true;
+                addToCartButton.style.opacity = '0.5';
+                purchaseButton.style.opacity = '0.5';
+            }
+        });
+    }
+
+    function showDateSelectionForm(boatId, action) {
         const dateForm = document.createElement('div');
         dateForm.className = 'date-selection-form';
         dateForm.innerHTML = `
-     <h3>Seleziona le date e gli orari per il noleggio</h3>
-     <div class="form-group">
-       <label for="pickup-date-${boatId}">Data di ritiro:</label>
-       <input type="date" id="pickup-date-${boatId}" required>
-     </div>
-     <div class="form-group">
-       <label for="pickup-time-${boatId}">Orario di ritiro:</label>
-       <input type="time" id="pickup-time-${boatId}" required>
-     </div>
-     <div class="form-group">
-       <label for="return-date-${boatId}">Data di consegna:</label>
-       <input type="date" id="return-date-${boatId}" required>
-     </div>
-     <div class="form-group">
-       <label for="return-time-${boatId}">Orario di consegna:</label>
-       <input type="time" id="return-time-${boatId}" required>
-     </div>
-     <button id="confirm-dates-${boatId}" class="confirm-button">Conferma</button>
-   `;
+        <h3>Seleziona le date e gli orari per il noleggio</h3>
+        <div class="form-group">
+            <label for="pickup-date-${boatId}">Data di ritiro:</label>
+            <input type="date" id="pickup-date-${boatId}" required>
+        </div>
+        <div class="form-group">
+            <label for="pickup-time-${boatId}">Orario di ritiro:</label>
+            <input type="time" id="pickup-time-${boatId}" required>
+        </div>
+        <div class="form-group">
+            <label for="return-date-${boatId}">Data di consegna:</label>
+            <input type="date" id="return-date-${boatId}" required>
+        </div>
+        <div class="form-group">
+            <label for="return-time-${boatId}">Orario di consegna:</label>
+            <input type="time" id="return-time-${boatId}" required>
+        </div>
+        <button id="confirm-dates-${boatId}" class="confirm-button">Conferma</button>
+        <button id="cancel-dates-${boatId}" class="cancel-button">Annulla</button>
+    `;
 
         const boatCard = document.querySelector(`.boat-card[data-id="${boatId}"]`);
         boatCard.appendChild(dateForm);
@@ -181,15 +232,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (pickupDate && pickupTime && returnDate && returnTime) {
                 if (validateDatesAndTimes(pickupDate, pickupTime, returnDate, returnTime)) {
                     if (isBoatAvailableForDates(boatId, pickupDate, pickupTime, returnDate, returnTime)) {
-                        addToCartWithDates(boatId, pickupDate, pickupTime, returnDate, returnTime);
+                        if (action === 'cart') {
+                            addToCartWithDates(boatId, pickupDate, pickupTime, returnDate, returnTime);
+                        } else if (action === 'purchase') {
+                            // Implementa la logica per l'acquisto diretto qui
+                            console.log('Implementare la logica di acquisto diretto');
+                        }
                         dateForm.remove();
+                        // Non riabilitiamo i pulsanti qui, perché l'azione è stata completata
                     } else {
                         alert('La barca non è disponibile per le date selezionate.');
+                        enableButtons(boatId);
                     }
                 }
             } else {
                 alert('Per favore, seleziona tutte le date e gli orari.');
             }
+        });
+        document.getElementById(`cancel-dates-${boatId}`).addEventListener('click', () => {
+            dateForm.remove();
+            enableButtons(boatId);
         });
     }
 
@@ -246,6 +308,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         return true;
+    }
+
+    function isBoatAvailable(boatId) {
+        const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const now = new Date();
+
+        // Check loaned boats
+        const isLoanedAndUnavailable = loanedBoats.some(boat => {
+            return boat.boatId === boatId && new Date(boat.returnDateTime) > now;
+        });
+
+        // Check cart
+        const isInCartAndUnavailable = cart.some(item => {
+            return item.boatId === boatId && new Date(item.pickupDateTime) > now;
+        });
+
+        return !isLoanedAndUnavailable && !isInCartAndUnavailable;
+    }
+
+    function enableBoatCardIfAvailable(boatId) {
+        if (isBoatAvailable(boatId)) {
+            enableButtons(boatId);
+        }
     }
 
     function isBoatAvailableForDates(boatId, pickupDate, pickupTime, returnDate, returnTime) {
@@ -310,7 +396,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         boatDetails.numericPrice = 0;
     }
 
-    async function handlePurchase(boatId) {
+    function handlePurchase(boatId) {
         try {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
@@ -334,7 +420,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const returnDateTime = new Date(existingLoanedBoat.returnDateTime);
                 if (returnDateTime < now) {
                     // Se la data di ritorno è passata, mostra il modulo di selezione delle date senza messaggi
-                    showDateSelectionForm(boatId);
+                    disableButtons(boatId);
+                    showDateSelectionForm(boatId, 'purchase');
                     return;
                 } else {
                     alert('Questa barca non è attualmente disponibile per il noleggio.');
@@ -343,12 +430,48 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Se la barca non è nel riepilogo, mostra il modulo di selezione delle date
-            showDateSelectionForm(boatId);
+            disableButtons(boatId);
+            showDateSelectionForm(boatId, 'purchase');
         } catch (error) {
             console.error('Errore durante l\'acquisto', error);
             alert(`Errore durante l'acquisto: ${error.message}`);
         }
     }
+
+    function disableButtons(boatId) {
+        const addToCartButton = document.querySelector(`.boat-card[data-id="${boatId}"] .blue-flag`);
+        const purchaseButton = document.querySelector(`.boat-card[data-id="${boatId}"] .green-flag`);
+
+        if (addToCartButton) {
+            addToCartButton.disabled = true;
+            addToCartButton.style.opacity = '0.5';
+            addToCartButton.style.cursor = 'not-allowed';
+        }
+
+        if (purchaseButton) {
+            purchaseButton.disabled = true;
+            purchaseButton.style.opacity = '0.5';
+            purchaseButton.style.cursor = 'not-allowed';
+        }
+    }
+
+    function enableButtons(boatId) {
+        const addToCartButton = document.querySelector(`.boat-card[data-id="${boatId}"] .blue-flag`);
+        const purchaseButton = document.querySelector(`.boat-card[data-id="${boatId}"] .green-flag`);
+
+        if (addToCartButton) {
+            addToCartButton.disabled = false;
+            addToCartButton.style.opacity = '1';
+            addToCartButton.style.cursor = 'pointer';
+        }
+
+        if (purchaseButton) {
+            purchaseButton.disabled = false;
+            purchaseButton.style.opacity = '1';
+            purchaseButton.style.cursor = 'pointer';
+        }
+    }
+
 
     async function fetchCartItems() {
         const cartItemsContainer = document.getElementById('cart-items-container');
@@ -433,10 +556,25 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error('Errore nel recupero delle barche');
             }
             const data = await response.json();
-            renderBoats(data, isAuthenticated); // Passa isAuthenticated qui
+            renderBoats(data, isAuthenticated);
+            startAvailabilityChecker(); // Start the availability checker
         } catch (error) {
             console.error('Errore durante il recupero delle barche:', error);
         }
+    }
+
+    function saveLoanedBoatsState() {
+        const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
+        const now = new Date();
+
+        // Filtra le barche ancora in noleggio
+        const currentLoanedBoats = loanedBoats.filter(boat => new Date(boat.returnDateTime) > now);
+
+        localStorage.setItem('loanedBoats', JSON.stringify(currentLoanedBoats));
+    }
+
+    function loadLoanedBoatsState() {
+        return JSON.parse(localStorage.getItem('loanedBoats')) || [];
     }
 
     function renderBoats(data, isAuthenticated) {
@@ -496,19 +634,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const addToCartButton = document.createElement('button');
                 addToCartButton.className = 'flag blue-flag';
                 addToCartButton.textContent = 'Aggiungi al carrello';
-                addToCartButton.style.color = 'black'; // Imposta il colore a rosso in caso di errore
-
-                addToCartButton.addEventListener('click', () => {
-                    addToCart(boat.id);
-                });
 
                 const purchaseButton = document.createElement('button');
                 purchaseButton.className = 'flag green-flag';
                 purchaseButton.textContent = 'Affitta';
 
-                purchaseButton.addEventListener('click', () => {
-                    handlePurchase(boat.id);
-                });
+                if (!isBoatAvailable(boat.id)) {
+                    addToCartButton.disabled = true;
+                    purchaseButton.disabled = true;
+                    addToCartButton.style.opacity = '0.5';
+                    purchaseButton.style.opacity = '0.5';
+                }
+
+                addToCartButton.addEventListener('click', () => addToCart(boat.id));
+                purchaseButton.addEventListener('click', () => handlePurchase(boat.id));
 
                 flags.appendChild(addToCartButton);
                 flags.appendChild(purchaseButton);
@@ -532,7 +671,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-
+    function startAvailabilityChecker() {
+        setInterval(() => {
+            const boatCards = document.querySelectorAll('.boat-card');
+            boatCards.forEach(card => {
+                const boatId = card.dataset.id;
+                enableBoatCardIfAvailable(boatId);
+            });
+        }, 60000); // Check every minute
+    }
 
     async function deleteBoat(boatId) {
         try {
@@ -598,7 +745,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         anchor.textContent = 'Home';
 
         // Rimuovi il colore del testo
-        anchor.style.color = '#000000'; // Puoi usare 'inherit' o una stringa vuota
+        anchor.style.color = inherit; // Puoi usare 'inherit' o una stringa vuota
 
         homeLink.appendChild(anchor);
         const leftNav = document.getElementById('left-nav');

@@ -28,6 +28,15 @@ header {
     align-items: center; /* Allinea verticalmente i pulsanti */
 }
 
+#navbar ul li a {
+    color: #000; /* Imposta il colore del testo a nero */
+    text-decoration: none; /* Rimuove la sottolineatura del link */
+}
+
+#navbar ul li a:hover {
+    color: #555; /* Cambia il colore del testo al passaggio del mouse */
+}
+
 #navbar li {
     margin: 0 8px; /* Margine simile a quello della pagina summary */
 }

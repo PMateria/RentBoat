@@ -32,6 +32,17 @@ header {
     margin: 0 8px; /* Margine */
 }
 
+/* Esempio di regola per la navbar */
+#navbar ul li a {
+    color: #000; /* Imposta il colore del testo a nero */
+    text-decoration: none; /* Rimuove la sottolineatura del link */
+    padding: 10px;
+}
+
+#navbar ul li a:hover {
+    color: #555; /* Cambia il colore del testo al passaggio del mouse */
+}
+
 #navbar a {
     text-decoration: none;
     color: white;

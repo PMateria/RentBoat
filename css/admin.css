@@ -6,7 +6,11 @@ body {
     margin: 0;
     padding: 0;
 }
-
+.container {
+    max-width: 1200px; /* Larghezza massima del contenitore */
+    margin: 0 auto; /* Centra il contenitore orizzontalmente */
+    padding: 0 20px; /* Aggiungi padding orizzontale per spaziatura */
+}
 /* Stile per la navbar */
 body {
     font-family: Arial, sans-serif;
