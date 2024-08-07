@@ -3,9 +3,10 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-image: url('https://images7.alphacoders.com/973/973818.jpg');
+    background-color: #f0f0f0; /* Colore di sfondo di backup */
+    background-image: url('https://cdn.pixabay.com/photo/2020/09/17/12/37/sunset-5579054_1280.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: 75% center; /* Sposta l'immagine del 75% verso destra */
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
@@ -66,12 +67,12 @@ h1, .section h2 {
 
 .blue-flag {
     width: 60%;
-    height: 40px;
+    height: 50px;
     margin: 10px auto;
     justify-content: center;
     display: flex;
     align-items: center;
-    color: #0044cc !important; /* Colore del testo blu */
+    color: #fff !important; /* Colore del testo blu */
     background: rgba(255, 255, 255, 0.0) !important; /* Sfondo bianco con 50% di trasparenza */
     font-size: 1em;
     font-weight: bold;
@@ -168,7 +169,7 @@ h1, .section h2 {
 
 .green-flag {
     width: 60%; /* Imposta la larghezza al 60% come per .blue-flag */
-    height: 40px; /* Imposta l'altezza a 40px come per .blue-flag */
+    height: 50px;
     margin: 10px auto; /* Margine automatico per centrare il pulsante */
     justify-content: center; /* Centra il testo orizzontalmente */
     display: flex; /* Utilizza Flexbox per centrare il testo */

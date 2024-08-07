@@ -151,20 +151,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
     function isBoatAvailable(boatId) {
-        const loanedBoats = loadLoanedBoatsState();
+        const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const now = new Date();
 
-        // Controlla le barche noleggiate
-        const isLoanedAndUnavailable = loanedBoats.some(boat =>
-        boat.boatId === boatId && new Date(boat.returnDateTime) > now
-        );
+        // Check loaned boats
+        const isLoanedAndUnavailable = loanedBoats.some(boat => {
+            return boat.boatId === boatId && new Date(boat.returnDateTime) > now;
+        });
 
-        // Controlla il carrello
-        const isInCartAndUnavailable = cart.some(item =>
-        item.boatId === boatId && new Date(item.pickupDateTime) > now
-        );
-
+        // Check cart
+        const isInCartAndUnavailable = cart.some(item => {
+            return item.boatId === boatId && new Date(item.pickupDateTime) > now;
+        });
         return !isLoanedAndUnavailable && !isInCartAndUnavailable;
     }
 
@@ -593,7 +592,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             boatCard.dataset.id = boat.id;
 
             const boatImage = document.createElement('img');
-            const imageUrl = boat.imageURL || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpuyB602xvUBarJybSdC-bgjJ7HxePDpI9Ww&s';
+            const imageUrl = boat.imageURL || 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0a/00/2c/5f.jpg';
 
             boatImage.src = imageUrl;
             boatImage.alt = boat.name;
@@ -612,7 +611,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const boatName = document.createElement('h2');
             boatName.textContent = boat.name;
-            boatName.style.color = 'red';
+            boatName.style.color = 'white'; // Cambia il colore a bianco
 
             const boatDescription = document.createElement('p');
             boatDescription.innerHTML = `<strong>${boat.description}</strong>`;
@@ -639,6 +638,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 purchaseButton.className = 'flag green-flag';
                 purchaseButton.textContent = 'Affitta';
 
+                // Aggiungi l'evento di clic per gestire il caso in cui la barca non è selezionabile
+                addToCartButton.addEventListener('click', () => {
+                    if (isBoatAvailable(boat.id)) {
+                        addToCart(boat.id);
+                    } else {
+                        alert('Questa barca non è attualmente disponibile per il noleggio.');
+                    }
+                });
+
+                purchaseButton.addEventListener('click', () => {
+                    if (isBoatAvailable(boat.id)) {
+                        handlePurchase(boat.id);
+                    } else {
+                        alert('Questa barca non è attualmente disponibile per il noleggio.');
+                    }
+                });
+
                 if (!isBoatAvailable(boat.id)) {
                     addToCartButton.disabled = true;
                     purchaseButton.disabled = true;
@@ -646,15 +662,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     purchaseButton.style.opacity = '0.5';
                 }
 
-                addToCartButton.addEventListener('click', () => addToCart(boat.id));
-                purchaseButton.addEventListener('click', () => handlePurchase(boat.id));
-
                 flags.appendChild(addToCartButton);
                 flags.appendChild(purchaseButton);
             } else {
                 // Se non autenticato, non aggiungere i pulsanti
                 const loginPrompt = document.createElement('p');
                 loginPrompt.style.color = 'red';
+                loginPrompt.textContent = 'Effettua il login per aggiungere al carrello o affittare una barca.';
                 flags.appendChild(loginPrompt);
             }
 
@@ -670,6 +684,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             boatsList.appendChild(boatCard);
         });
     }
+
 
     function startAvailabilityChecker() {
         setInterval(() => {
