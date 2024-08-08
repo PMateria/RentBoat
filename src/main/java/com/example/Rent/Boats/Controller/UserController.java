@@ -65,7 +65,6 @@ package com.example.Rent.Boats.Controller;
         }
     }
 
-
     @GetMapping("/utenti")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -1,6 +1,5 @@
 package com.example.Rent.Boats.configs;
 
-
 import com.example.Rent.Boats.Entity.User;
 import com.example.Rent.Boats.Service.JwtService;
 import io.jsonwebtoken.Claims;
@@ -8,6 +7,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,11 +29,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
+    private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
@@ -51,26 +52,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String username;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            logger.info("No JWT token found in request headers");
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
         username = jwtService.extractUsername(jwt);
+        logger.info("JWT token found for user: {}", username);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 Claims claims = jwtService.extractAllClaims(jwt);
                 String roles = claims.get("roles", String.class);
+                logger.info("Roles found in JWT: {}", roles);
                 List<GrantedAuthority> authorities = Arrays.stream(roles.split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
+                logger.info("Authorities created: {}", authorities);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, authorities);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                logger.info("Authentication token set in SecurityContext for user: {}", username);
+            } else {
+                logger.warn("Invalid JWT token for user: {}", username);
             }
         }
         filterChain.doFilter(request, response);

@@ -105,24 +105,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // Verifica se la barca è disponibile
-            if (!isBoatAvailable(boatId)) {
-                alert('Questa barca non è attualmente disponibile per il noleggio.');
-                return;
-            }
-
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const existingBoat = cart.find(item => item.boatId === boatId);
-
-            // Verifica se la barca è già nel carrello
-            if (existingBoat) {
-                alert('Questa barca è già nel carrello.');
-                return;
-            }
-
-            // Disabilita entrambi i pulsanti
-            disableButtons(boatId);
-
             // Mostra il form per la selezione delle date
             showDateSelectionForm(boatId, 'cart');
         } catch (error) {
@@ -222,6 +204,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById(`pickup-date-${boatId}`).min = today;
         document.getElementById(`return-date-${boatId}`).min = today;
 
+        const now = new Date();
+
         document.getElementById(`confirm-dates-${boatId}`).addEventListener('click', () => {
             const pickupDate = document.getElementById(`pickup-date-${boatId}`).value;
             const pickupTime = document.getElementById(`pickup-time-${boatId}`).value;
@@ -230,27 +214,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (pickupDate && pickupTime && returnDate && returnTime) {
                 if (validateDatesAndTimes(pickupDate, pickupTime, returnDate, returnTime)) {
+                    // Verifica la disponibilità
                     if (isBoatAvailableForDates(boatId, pickupDate, pickupTime, returnDate, returnTime)) {
-                        if (action === 'cart') {
-                            addToCartWithDates(boatId, pickupDate, pickupTime, returnDate, returnTime);
-                        } else if (action === 'purchase') {
-                            // Implementa la logica per l'acquisto diretto qui
-                            console.log('Implementare la logica di acquisto diretto');
-                        }
+                        addToCartWithDates(boatId, pickupDate, pickupTime, returnDate, returnTime);
                         dateForm.remove();
-                        // Non riabilitiamo i pulsanti qui, perché l'azione è stata completata
+                        enableButtons(boatId); // Assicurati di riabilitare i pulsanti dopo la conferma
                     } else {
-                        alert('La barca non è disponibile per le date selezionate.');
-                        enableButtons(boatId);
+                        alert('La barca è già noleggiata per gli orari scelti.');
                     }
                 }
             } else {
                 alert('Per favore, seleziona tutte le date e gli orari.');
             }
         });
+
         document.getElementById(`cancel-dates-${boatId}`).addEventListener('click', () => {
             dateForm.remove();
-            enableButtons(boatId);
+            enableButtons(boatId); // Riabilita i pulsanti se si annulla
         });
     }
 
@@ -380,6 +360,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Controlla se la barca è già presente nel carrello
+        const existingItemInCart = cart.find(item => item.boatId === boatId);
+        if (existingItemInCart) {
+            alert('Questa barca è già nel carrello!');
+            return; // Esci senza aggiungere la barca
+        }
+
+        // Aggiungi il nuovo oggetto barca al carrello
         cart.push(boatDetails);
         localStorage.setItem('cart', JSON.stringify(cart));
 
@@ -400,36 +389,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
 
-            // Check if the boat is already in the cart
-            const isInCart = cart.some(item => item.boatId === boatId);
+            // Controllo se la barca è già nel carrello
+            const existingItemInCart = cart.find(item => item.boatId === boatId);
+            const isInCart = !existingItemInCart;
 
-            // Check if the boat is already loaned
+            // Controllo se la barca è già noleggiata
             const isLoaned = loanedBoats.some(boat => boat.boatId === boatId);
 
-            if (isInCart) {
-                alert('Questa barca è già nel carrello.');
-                return;
-            }
-
-            // Se la barca è nel riepilogo, controlla se la data di ritorno è passata
             const now = new Date();
-            const existingLoanedBoat = loanedBoats.find(boat => boat.boatId === boatId);
 
-            if (existingLoanedBoat) {
-                const returnDateTime = new Date(existingLoanedBoat.returnDateTime);
+            // Se la barca è nel carrello, verifica se l'orario di ritiro è passato
+            if (isInCart) {
+                const returnDateTime = new Date(existingItemInCart.returnDateTime);
                 if (returnDateTime < now) {
-                    // Se la data di ritorno è passata, mostra il modulo di selezione delle date senza messaggi
-                    disableButtons(boatId);
+                    // Se l'orario di ritiro è passato, permetti all'utente di noleggiare la barca
                     showDateSelectionForm(boatId, 'purchase');
                     return;
                 } else {
-                    alert('Questa barca non è attualmente disponibile per il noleggio.');
+                    alert('Questa barca è già nel carrello e non è disponibile fino a dopo il ritorno.');
                     return;
                 }
             }
 
-            // Se la barca non è nel riepilogo, mostra il modulo di selezione delle date
-            disableButtons(boatId);
+            // Se la barca è già noleggiata
+            if (isLoaned) {
+                alert('Questa barca non è attualmente disponibile per il noleggio.');
+                return;
+            }
+
+            // Se la barca non è nel carrello o già noleggiata, mostra il modulo di selezione delle date
             showDateSelectionForm(boatId, 'purchase');
         } catch (error) {
             console.error('Errore durante l\'acquisto', error);
@@ -490,16 +478,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         <h3>${item.name}</h3>
         <p>${item.price}</p>
         <img src="${item.imageURL}" alt="${item.name}" class="cart-image">
-      `;
+    `;
 
             const removeButton = document.createElement('button');
             removeButton.textContent = 'Rimuovi';
             removeButton.style.backgroundColor = 'red';  // Imposta il colore di sfondo a rosso
+            removeButton.style.marginTop = '10px'; // Aggiungi margine per separarlo dall'immagine
 
             removeButton.addEventListener('click', () => removeCartItem(item.boatId));
 
+            // Aggiungi un contesto per itemDetails che include il bottone di rimozione
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.marginTop = '100px'; // Aggiungi margine superiore al contenitore del pulsante
+            buttonContainer.appendChild(removeButton);
+
             cartItem.appendChild(itemDetails);
-            cartItem.appendChild(removeButton);
+            cartItem.appendChild(buttonContainer); // Append il contenitore del bottone
 
             cartItemsContainer.appendChild(cartItem);
 
@@ -507,11 +501,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             total += item.numericPrice || 0;
         });
 
+
         // Display total
         cartTotalElement.innerHTML = `
-      <div class="cart-total">
-        <p>Totale: ${total.toFixed(2)} EUR</p>
-      </div>
+        <div class="cart-total">
+            <p>Totale: ${total.toFixed(2)} EUR</p>
+        </div>
     `;
 
         const checkoutButton = document.getElementById('checkout-button');
@@ -525,27 +520,123 @@ document.addEventListener('DOMContentLoaded', async () => {
         fetchCartItems();
     }
 
-    function handleCheckout() {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    function safeSetItem(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                console.error('Quota exceeded. Please clean up some data.');
+                // Esegui la logica per gestire l'errore di quota superata, come la pulizia dei dati.
+            } else {
+                console.error('Errore sconosciuto durante il salvataggio:', e);
+            }
+        }
+    }
 
-        if (cart.length === 0) {
-            alert('Il carrello è vuoto.');
-            return;
+    function cleanOldData() {
+        const now = new Date();
+        let loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
+
+        // Keep only non-expired rentals
+        loanedBoats = loanedBoats.filter(boat => new Date(boat.returnDateTime) > now);
+
+        // Sort by return date, keeping the most recent ones
+        loanedBoats.sort((a, b) => new Date(b.returnDateTime) - new Date(a.returnDateTime));
+
+        // Keep only the last 50 rentals (or adjust this number as needed)
+        loanedBoats = loanedBoats.slice(0, 50);
+
+        localStorage.setItem('loanedBoats', JSON.stringify(loanedBoats));
+    }
+
+    // Chiama questa funzione periodicamente o in un punto critico del tuo codice
+    cleanOldData();
+
+    function cleanLocalStorage() {
+        // Rimuove dati obsoleti
+        localStorage.removeItem('obsoleteDataKey');
+    }
+
+
+    function handleBoatImages(boats) {
+        const imageCache = {};
+
+        boats.forEach(boat => {
+            // Usa l'URL dell'immagine direttamente dal server
+            const imageUrl = boat.imageURL;
+
+            // Crea un oggetto Image per precaricare l'immagine
+            const img = new Image();
+            img.src = imageUrl;
+
+            // Memorizza l'URL dell'immagine in un oggetto cache in memoria
+            imageCache[boat.id] = imageUrl;
+
+            // Aggiungi un evento di fallback in caso l'immagine non si carichi
+            img.onerror = () => {
+                imageCache[boat.id] = 'https://via.placeholder.com/150';
+            };
+        });
+
+        function getBoatImageUrl(boatId) {
+            return imageCache[boatId] || 'https://via.placeholder.com/150';
         }
 
-        // Ottieni le barche già in prestito
-        const existingLoanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
-
-        // Aggiungi le nuove barche dal carrello
-        const updatedLoanedBoats = [...existingLoanedBoats, ...cart];
-
-        // Memorizza le barche prese in prestito nel localStorage
-        localStorage.setItem('loanedBoats', JSON.stringify(updatedLoanedBoats));
-
-        alert('Ordine effettuato con successo!');
-        localStorage.removeItem('cart'); // Pulisce il carrello
-        window.location.href = '/html/summary.html'; // Reindirizza alla pagina summary
+        return getBoatImageUrl;
     }
+
+    function handleCheckout() {
+        try {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert('Il carrello è vuoto.');
+                return;
+            }
+
+            let existingLoanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
+            const updatedLoanedBoats = [...existingLoanedBoats, ...cart];
+
+            // Remove old data before attempting to save
+            cleanOldData();
+
+            try {
+                localStorage.setItem('loanedBoats', JSON.stringify(updatedLoanedBoats));
+            } catch (storageError) {
+                if (storageError.name === 'QuotaExceededError') {
+                    console.warn('Storage quota exceeded. Attempting to free up space...');
+
+                    // Remove the oldest loaned boats until we can save
+                    while (existingLoanedBoats.length > 0) {
+                        existingLoanedBoats.shift(); // Remove the oldest entry
+                        const reducedLoanedBoats = [...existingLoanedBoats, ...cart];
+
+                        try {
+                            localStorage.setItem('loanedBoats', JSON.stringify(reducedLoanedBoats));
+                            console.log('Successfully saved reduced data');
+                            break; // If successful, exit the loop
+                        } catch (e) {
+                            if (e.name !== 'QuotaExceededError') throw e; // If it's a different error, throw it
+                            // Otherwise, continue the loop and remove more items
+                        }
+                    }
+
+                    if (existingLoanedBoats.length === 0) {
+                        throw new Error('Unable to save order due to storage limitations. Please contact support.');
+                    }
+                } else {
+                    throw storageError; // If it's not a QuotaExceededError, rethrow it
+                }
+            }
+
+            localStorage.removeItem('cart');
+            alert('Ordine effettuato con successo!');
+            window.location.href = '../html/summary.html';
+        } catch (error) {
+            console.error('Errore durante il checkout:', error);
+            alert(`Errore durante il checkout: ${error.message}`);
+        }
+    }
+
 
 
     async function loadBoats(isAuthenticated) {
@@ -555,8 +646,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error('Errore nel recupero delle barche');
             }
             const data = await response.json();
-            renderBoats(data, isAuthenticated);
-            startAvailabilityChecker(); // Start the availability checker
+            const getBoatImageUrl = handleBoatImages(data);
+            renderBoats(data, isAuthenticated, getBoatImageUrl);
+            startAvailabilityChecker();
         } catch (error) {
             console.error('Errore durante il recupero delle barche:', error);
         }
@@ -576,9 +668,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         return JSON.parse(localStorage.getItem('loanedBoats')) || [];
     }
 
+
+    Copiare
     function renderBoats(data, isAuthenticated) {
         const boatsList = document.getElementById('boats-list');
-
         if (!boatsList) {
             console.error('Elemento con ID "boats-list" non trovato');
             return;
@@ -592,20 +685,39 @@ document.addEventListener('DOMContentLoaded', async () => {
             boatCard.dataset.id = boat.id;
 
             const boatImage = document.createElement('img');
-            const imageUrl = boat.imageURL || 'https://media.tacdn.com/media/attractions-splice-spp-674x446/0a/00/2c/5f.jpg';
-
-            boatImage.src = imageUrl;
             boatImage.alt = boat.name;
             boatImage.className = 'boat-image';
+            boatImage.src = boat.imageURL || 'https://via.placeholder.com/150'; // Usa un'immagine di fallback
 
             boatImage.onerror = () => {
-                boatImage.src = 'https://via.placeholder.com/150'; // URL di fallback per errori di caricamento
+                boatImage.src = 'https://i.postimg.cc/W4NXfR6J/Clicca-qui-per-selezionare-una-foto.png'; // Fallback
             };
 
-            boatImage.onload = () => {
-                console.log('Immagine caricata con successo:', imageUrl);
-            };
+            // Prova a caricare l'immagine della barca
+            fetch(`http://localhost:8080/barche/${boat.id}/image`)
+                .then(response => {
+                if (response.ok) {
+                    return response.blob(); // Convertire la risposta in un blob
+                } else {
+                    throw new Error('Immagine non trovata');
+                }
+            })
+                .then(blob => {
+                boatImage.src = URL.createObjectURL(blob); // Crea un URL per il blob
+            })
+                .catch(err => {
+                console.error('Errore nel recupero dell\'immagine:', err);
+                console.log('Impostando immagine di fallback');
+                boatImage.src = 'https://via.placeholder.com/150'; // URL dell'immagine di fallback
+            });
 
+            boatImage.className = 'boat-image';
+
+            boatImage.addEventListener('click', () => {
+                window.location.href = `../html/boat-details.html?id=${boat.id}`;
+            });
+
+            // Resto della tua logica per allestire e appendere i dettagli della barca
             const boatDetails = document.createElement('div');
             boatDetails.className = 'boat-details';
 
@@ -619,15 +731,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const boatPrice = document.createElement('p');
             boatPrice.className = 'boat-price';
-            boatPrice.textContent = `Price: ${boat.price} EUR`;
+            boatPrice.textContent = `Prezzo: ${boat.price} EUR`;
 
-            // Aggiungi il numero di posti
             const boatPlaces = document.createElement('p');
             boatPlaces.className = 'boat-places';
             boatPlaces.textContent = `Posti disponibili: ${boat.places}`;
 
-            const flags = document.createElement('div');
-            flags.className = 'flags';
+
+
+            boatDetails.appendChild(boatName);
+            boatDetails.appendChild(boatDescription);
+            boatDetails.appendChild(boatPrice);
+            boatDetails.appendChild(boatPlaces);
 
             if (isAuthenticated) {
                 const addToCartButton = document.createElement('button');
@@ -636,55 +751,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const purchaseButton = document.createElement('button');
                 purchaseButton.className = 'flag green-flag';
-                purchaseButton.textContent = 'Affitta';
+                purchaseButton.textContent = 'Noleggia';
 
-                // Aggiungi l'evento di clic per gestire il caso in cui la barca non è selezionabile
-                addToCartButton.addEventListener('click', () => {
-                    if (isBoatAvailable(boat.id)) {
-                        addToCart(boat.id);
-                    } else {
-                        alert('Questa barca non è attualmente disponibile per il noleggio.');
-                    }
-                });
+                // Logica per i pulsanti
+                addToCartButton.addEventListener('click', () => addToCart(boat.id));
+                purchaseButton.addEventListener('click', () => handlePurchase(boat.id));
 
-                purchaseButton.addEventListener('click', () => {
-                    if (isBoatAvailable(boat.id)) {
-                        handlePurchase(boat.id);
-                    } else {
-                        alert('Questa barca non è attualmente disponibile per il noleggio.');
-                    }
-                });
-
-                if (!isBoatAvailable(boat.id)) {
-                    addToCartButton.disabled = true;
-                    purchaseButton.disabled = true;
-                    addToCartButton.style.opacity = '0.5';
-                    purchaseButton.style.opacity = '0.5';
-                }
-
-                flags.appendChild(addToCartButton);
-                flags.appendChild(purchaseButton);
-            } else {
-                // Se non autenticato, non aggiungere i pulsanti
-                const loginPrompt = document.createElement('p');
-                loginPrompt.style.color = 'red';
-                loginPrompt.textContent = 'Effettua il login per aggiungere al carrello o affittare una barca.';
-                flags.appendChild(loginPrompt);
+                boatDetails.appendChild(addToCartButton);
+                boatDetails.appendChild(purchaseButton);
             }
-
-            boatDetails.appendChild(boatName);
-            boatDetails.appendChild(boatDescription);
-            boatDetails.appendChild(boatPrice);
-            boatDetails.appendChild(boatPlaces); // Aggiungi il numero di posti
-            boatDetails.appendChild(flags);
-
             boatCard.appendChild(boatImage);
             boatCard.appendChild(boatDetails);
-
             boatsList.appendChild(boatCard);
         });
     }
-
 
     function startAvailabilityChecker() {
         setInterval(() => {

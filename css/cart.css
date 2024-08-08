@@ -64,7 +64,15 @@ h1 {
     color: #0056b3; /* Colore del testo simile a quello della pagina summary */
 }
 
+#cart-items-container img {
+    max-width: 150px; /* Cambia 150px con la larghezza desiderata */
+    height: auto; /* Mantiene le proporzioni originali dell'immagine */
+    margin: 10px; /* Aggiungi margine se necessario */
+}
+
 #cart-items-container {
+    display: flex;
+    flex-wrap: wrap;
     background-color: #fff;
     padding: 20px; /* Padding simile a quello delle card della pagina summary */
     border-radius: 10px; /* Border-radius simile a quello delle card della pagina summary */
@@ -73,10 +81,10 @@ h1 {
 
 .cart-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Cambia questo per ritornare a normal line */
     align-items: center;
-    border-bottom: 1px solid #ddd; /* Colore del bordo simile a quello della pagina summary */
-    padding: 10px 0; /* Padding simile a quello delle card della pagina summary */
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
 }
 
 .cart-item h3 {

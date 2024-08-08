@@ -8,7 +8,9 @@ import com.example.Rent.Boats.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,12 +61,28 @@ public class BoatService {
                 existingBoat.setAvailable(updatedBoat.getAvailable());
             }
 
+            if (updatedBoat.getBoat_image() != null) {
+                existingBoat.setBoat_image(updatedBoat.getBoat_image());
+            }
+
             // Salva e restituisci la barca aggiornata
             return boatRepository.save(existingBoat);
         } else {
             throw new IllegalArgumentException("Barca non trovata con ID: " + id);
         }
     }
+
+    public Boat saveBoatImage(Long id, MultipartFile file) throws IOException {
+        Optional<Boat> optionalBoat = boatRepository.findById(id);
+        if (optionalBoat.isPresent()) {
+            Boat boat = optionalBoat.get();
+            boat.setBoat_image(file.getBytes());
+            return boatRepository.save(boat);
+        } else {
+            throw new IllegalArgumentException("Barca non trovata con ID: " + id);
+        }
+    }
+
     public void deleteBoatById(Long id) {
         Optional<Boat> boatOptional = boatRepository.findById(id);
         if (boatOptional.isPresent()) {

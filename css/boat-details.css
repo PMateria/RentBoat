@@ -1,0 +1,59 @@
+#navbar {
+    background-color: #fff;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#navbar ul.left {
+    float: left;
+}
+
+#navbar ul.right {
+    float: right;
+}
+
+#navbar ul li {
+    float: left;
+}
+
+#navbar ul li a {
+    display: block;
+    color: #333;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#navbar ul li a:hover {
+    background-color: #f0f0f0;
+}
+
+/* Codice CSS specifico per la pagina boat details */
+#boat-details-container {
+    margin: 70px 20px 20px;
+}
+
+#boat-details-container h1 {
+    font-size: 24px;
+}
+
+#boat-details-container img.boat-image {
+    max-width: 800px; /* Imposta una larghezza massima di 300px */
+    height: auto;
+    display: block; /* Assicura che l'immagine sia un blocco */
+    margin: 0 auto 0 0px; /* Aggiunge 50px di margine a sinistra */
+}
+
+#boat-details-container p {
+    font-size: 18px;
+}

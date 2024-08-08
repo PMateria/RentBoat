@@ -13,14 +13,13 @@
         <ul class="left" id="left-nav">
             <li><a href="../index.html">Home</a></li>
         </ul>
-        <ul class="right" id="right-nav">
-        </ul>
+        <ul class="right" id="right-nav"></ul>
     </nav>
 </header>
 <main>
-    <div class="container">
-        <h1>Admin Dashboard</h1>
+    <div class="container"><h1>Admin Dashboard</h1>
         <div id="adminContent">
+
             <div class="section">
                 <h2>Aggiungi una nuova barca</h2>
                 <form id="addBoatForm">
@@ -32,33 +31,49 @@
                 </form>
             </div>
 
-            <div class="section">
-                <h2>Lista Barche</h2>
-                <div id="boats-list">
-                    <!-- La lista delle barche verrà inserita qui -->
-                </div>
-            </div>
+        </div>
 
-            <div class="section">
-                <h2>Lista Utenti</h2>
-                <div id="users-list">
-                    <!-- La lista degli utenti verrà inserita qui -->
-                </div>
+        <div class="section">
+            <h2>Lista Barche</h2>
+            <div id="boats-list">
+                <!-- La lista delle barche verrà inserita qui -->
             </div>
         </div>
+
+        <div class="section">
+            <h2>Lista Utenti</h2>
+            <div id="users-list">
+                <!-- La lista degli utenti verrà inserita qui -->
+            </div>
+
+            <div class="section">
+                <h2>Lista Prenotazioni</h2>
+                <div id="reservations-list"></div>
+
+                <!-- La lista delle prenotazioni verrà inserita qui -->
+            </div>
+
+            <div class="section">
+                <h2>Statistiche Prenotazioni Mensili</h2>
+                <canvas id="monthlyReservationsChart"></canvas>
+            </div>
+
+        </div>
+    </div>
     </div>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="../js/admin.js"></script>
 <script>
-    document.getElementById('logout').addEventListener('click', function(event) {
+    document.getElementById('logout')
+        .addEventListener('click', function(event){
         event.preventDefault();
         sessionStorage.removeItem('jwtToken');
         sessionStorage.removeItem('userId');
-        window.location.href = '../index.html';
-    });
+        window.location.href = '../index.html'; });
 </script>
+
 </body>
 </html>

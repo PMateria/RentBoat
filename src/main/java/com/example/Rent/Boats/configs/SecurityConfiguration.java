@@ -47,6 +47,7 @@
                             .requestMatchers("/Reservation/addReservation").authenticated()
                             .requestMatchers("/Reservation/delete/{id}").hasRole("ADMIN")
                             .requestMatchers("Reservation/byUserId/{id}").authenticated()
+                            .requestMatchers("/barche/{id}/image").permitAll()
                             // tutte le altre rotte richiedono l'autenticazione dell'utente tramite Token JWT
                             .requestMatchers("/api/**").authenticated() // Richiedi autenticazione per tutte le altre rotte API
                             .anyRequest().authenticated() // Richiedi autenticazione per tutte le altre richieste
