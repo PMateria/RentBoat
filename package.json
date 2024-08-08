@@ -1,0 +1,22 @@
+{
+  "name": "rent-boats",
+  "version": "1.0.0",
+  "description": "Boat rental project",
+  "main": "script.js",
+  "scripts": {
+    "start": "concurrently \"npm run start-backend\" \"npm run wait-and-start-frontend\"",
+    "start-backend": "mvn spring-boot:run",
+    "wait-and-start-frontend": "node -e \"require('sleep').sleep(15)\" && npm run start-frontend",
+    "start-frontend": "http-server . -c-1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "sleep": "^6.3.0"
+  }
+}
