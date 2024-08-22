@@ -90,7 +90,11 @@ function handleImageUpload(event, boatId) {
         })
             .catch(error => {
             console.error('Error uploading image:', error);
-            alert('Si è verificato un errore durante il caricamento dell\'immagine. Riprova.');
+            Swal.fire({
+                title: "Error!",
+                text: "Si è verificato un errore durante il caricamento dell\'immagine. Riprova.",
+                icon: "error"
+            });
         });
     }
 }

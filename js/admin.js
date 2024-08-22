@@ -52,7 +52,11 @@
                 event.preventDefault();
 
                 if (!isAdmin()) {
-                    alert('Solo gli amministratori possono aggiungere barche.');
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Solo gli amministratori possono aggiungere barche.",
+                        icon: "error"
+                    });
                     return;
                 }
 
@@ -85,13 +89,21 @@
                     }
 
                     console.log('Barca aggiunta con successo');
-                    alert('Barca aggiunta con successo');
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Barca aggiunta con successo",
+                        icon: "success"
+                    });
 
                     // Ricarica la lista delle barche
                     await loadBoats();
                 } catch (error) {
                     console.error('Errore durante l\'aggiunta della barca:', error);
-                    alert('Impossibile aggiungere la barca');
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Impossibile aggiungere la barca",
+                        icon: "error"
+                    });
                 }
             });
         }
@@ -207,7 +219,11 @@
         // Funzione per eliminare un utente
         async function deleteUser(userId) {
             if (!userId) {
-                alert('Inserisci un ID utente');
+                Swal.fire({
+                    title: "Error!",
+                    text: "Inserisci un ID utente",
+                    icon: "error"
+                });
                 return;
             }
 
@@ -230,7 +246,11 @@
                         deleteMessage.style.color = 'green';
                         deleteMessage.textContent = 'Utente eliminato con successo';
                     } else {
-                        alert('Utente eliminato con successo');
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Utente eliminato con successo",
+                            icon: "success"
+                        });
                     }
                     await loadUsers(); // Ricarica la lista degli utenti dopo l'eliminazione
                 } else if (response.status === 401 || response.status === 403) {
@@ -239,7 +259,11 @@
                         deleteMessage.style.color = 'red';
                         deleteMessage.textContent = 'Non hai autorizzazione per eliminare questo utente';
                     } else {
-                        alert('Non hai autorizzazione per eliminare questo utente');
+                        Swal.fire({
+                            title: "Autenticazione Negata!",
+                            text: "Non hai autorizzazione per eliminare questo utente",
+                            icon: "error"
+                        });
                     }
                 } else {
                     if (messageExists) {
@@ -247,7 +271,12 @@
                         deleteMessage.style.color = 'red';
                         deleteMessage.textContent = 'Eliminazione utente non riuscita';
                     } else {
-                        alert('Eliminazione utente non riuscita');
+
+                        Swal.fire({
+                            title: "Error!",
+                            text: "Eliminazione utente non riuscita",
+                            icon: "error"
+                        });
                     }
                 }
 
@@ -323,7 +352,11 @@
         // Funzione per eliminare una barca
         async function deleteBoat(boatId) {
             if (!boatId) {
-                alert('Inserisci un ID barca');
+                Swal.fire({
+                    title: "Error!",
+                    text: "Inserisci un ID barca",
+                    icon: "error"
+                });
                 return;
             }
 
@@ -336,13 +369,25 @@
                 });
 
                 if (response.ok) {
-                    alert('Barca eliminata con successo');
-                    await loadBoats(); // Ricarica la lista delle barche dopo l'eliminazione
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Barca eliminata con successo",
+                        icon: "success"
+                    });                    await loadBoats(); // Ricarica la lista delle barche dopo l'eliminazione
                 } else if (response.status === 401 || response.status === 403) {
                     console.log("boatId", boatId)
-                    alert('Non hai autorizzazione per eliminare questa barca');
+                    Swal.fire({
+                        title: "Autorizzazione Negata!",
+                        text: "Non hai autorizzazione per eliminare questa barca",
+                        icon: "error"
+                    });
+
                 } else {
-                    alert('Eliminazione della barca non riuscita');
+                    Swal.fire({
+                        title: "Errore!",
+                        text: "Eliminazione della barca non riuscita",
+                        icon: "error"
+                    });
                 }
             } catch (error) {
                 console.error('Errore durante l\'eliminazione della barca:', error);
@@ -451,7 +496,11 @@
         // Funzione per eliminare una prenotazione
         async function deleteReservation(reservationId) {
             if (!reservationId) {
-                alert('Inserisci un ID prenotazione');
+                Swal.fire({
+                    title: "Error!",
+                    text: "Inserisci un ID prenotazione",
+                    icon: "error"
+                });
                 return;
             }
 
@@ -464,12 +513,25 @@
                 });
 
                 if (response.ok) {
-                    alert('Prenotazione eliminata con successo');
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Prenotazione eliminata con successo",
+                        icon: "success"
+                    });
                     await loadReservations(); // Ricarica la lista delle prenotazioni dopo l'eliminazione
                 } else if (response.status === 401 || response.status === 403) {
-                    alert('Non hai autorizzazione per eliminare questa prenotazione');
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Non hai autorizzazione per eliminare questa prenotazione",
+                        icon: "error"
+                    });
+
                 } else {
-                    alert('Eliminazione della prenotazione non riuscita');
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Eliminazione della prenotazione non riuscita",
+                        icon: "error"
+                    });
                 }
             } catch (error) {
                 console.error('Errore durante l\'eliminazione della prenotazione:', error);

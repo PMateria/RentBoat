@@ -8,8 +8,7 @@ async function loadImage(boatId) {
         return URL.createObjectURL(blob);
     } catch (error) {
         console.error('Errore nel recupero dell\'immagine:', error);
-        // Restituisci una foto di fallback
-        return 'https://via.placeholder.com/150'; // o l'URL di un'immagine di fallback
+        return 'https://via.placeholder.com/150';
     }
 }
 
@@ -23,6 +22,11 @@ async function loadSummaryData() {
         return;
     }
 
+    if (!userId) {
+        summaryContainer.innerHTML = '<p>Errore: Utente non autenticato.</p>';
+        return;
+    }
+
     try {
         loanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
     } catch (error) {
@@ -31,12 +35,8 @@ async function loadSummaryData() {
         return;
     }
 
-    if (!userId) {
-        summaryContainer.innerHTML = '<p>Errore: Utente non autenticato.</p>';
-        return;
-    }
-
-    const userLoanedBoats = loanedBoats.filter(boat => boat.userId === userId); // Aggiungi confronto a userId specifico
+    // Filtra le barche noleggiate solo per l'utente corrente
+    const userLoanedBoats = loanedBoats.filter(boat => boat.userId === userId);
 
     if (userLoanedBoats.length === 0) {
         summaryContainer.innerHTML = '<p>Non ci sono barche prese in prestito.</p>';
@@ -50,7 +50,7 @@ async function loadSummaryData() {
         summaryItem.className = 'summary-item';
 
         // Ottieni l'immagine dell'imbarcazione usando l'API
-        const imageUrl = await loadImage(boat.boatId); // Assicurati che boat.boatId sia l'ID corretto della barca.
+        const imageUrl = await loadImage(boat.boatId);
 
         summaryItem.innerHTML = `
             <img src="${imageUrl}" alt="${boat.name}" class="boat-image">
