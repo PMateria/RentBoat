@@ -15,7 +15,7 @@ async function loadImage(boatId) {
 async function loadSummaryData() {
     const summaryContainer = document.getElementById('summary-container');
     let loanedBoats = [];
-    let userId = sessionStorage.getItem('userId');
+    const userId = sessionStorage.getItem('userId');
 
     if (!summaryContainer) {
         console.error('Elemento con id "summary-container" non trovato');
@@ -35,7 +35,6 @@ async function loadSummaryData() {
         return;
     }
 
-    // Filtra le barche noleggiate solo per l'utente corrente
     const userLoanedBoats = loanedBoats.filter(boat => boat.userId === userId);
 
     if (userLoanedBoats.length === 0) {
@@ -52,12 +51,31 @@ async function loadSummaryData() {
         // Ottieni l'immagine dell'imbarcazione usando l'API
         const imageUrl = await loadImage(boat.boatId);
 
+        // Controlla se le date di ritiro e consegna sono valide
+        const pickupDateTime = new Date(boat.pickupDateTime);
+        const returnDateTime = new Date(boat.returnDateTime);
+        const pricePerHour = Number(boat.numericPrice); // Assicurati che sia un numero
+        let totalPrice = 0;
+
+        if (isNaN(pricePerHour)) {
+            console.error('Prezzo non valido:', boat.numericPrice);
+            totalPrice = pricePerHour; // O gestisci come preferisci
+        } else {
+            if (!isNaN(pickupDateTime) && !isNaN(returnDateTime)) {
+                // Calcola la durata del noleggio in ore
+                const rentalHours = (returnDateTime - pickupDateTime) / (1000 * 60 * 60); // Converte millisecondi in ore
+                totalPrice = Math.max(0, rentalHours * pricePerHour); // Prezzo totale calcolato; non lasciar scendere sotto zero
+            } else {
+                totalPrice = pricePerHour; // Prezzo normale se le date non sono valide
+            }
+        }
+
         summaryItem.innerHTML = `
             <img src="${imageUrl}" alt="${boat.name}" class="boat-image">
             <h3>${boat.name}</h3>
-            <p>Prezzo: ${boat.price}</p>
-            <p>Data e ora di ritiro: ${new Date(boat.pickupDateTime).toLocaleString()}</p>
-            <p>Data e ora di consegna: ${new Date(boat.returnDateTime).toLocaleString()}</p>
+            <p>Prezzo totale: €${totalPrice.toFixed(2)}</p>
+            <p>Data e ora di ritiro: ${pickupDateTime.toLocaleString()}</p>
+            <p>Data e ora di consegna: ${returnDateTime.toLocaleString()}</p>
         `;
         summaryContainer.appendChild(summaryItem);
     }

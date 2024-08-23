@@ -368,6 +368,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             boatDetails.numericPrice = 0;
         }
 
+        // Calcola la durata del noleggio in ore e il prezzo totale
+        const durationInHours = (new Date(boatDetails.returnDateTime) - new Date(boatDetails.pickupDateTime)) / (1000 * 60 * 60);
+        boatDetails.totalPrice = durationInHours * boatDetails.numericPrice;
+
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const existingItemInCart = cart.find(item => item.boatId === boatId);
         if (existingItemInCart) {
@@ -381,7 +385,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         cart.push(boatDetails);
         localStorage.setItem('cart', JSON.stringify(cart));
-
         Swal.fire({
             title: "Ottimo lavoro!",
             text: "Barca aggiunta al carrello!",
@@ -398,6 +401,45 @@ document.addEventListener('DOMContentLoaded', async () => {
         boatDetails.numericPrice = 0;
     }
 
+
+    function handleRent(boatId) {
+        try {
+            const boatCard = document.querySelector(`.boat-card[data-id="${boatId}"]`);
+
+            // Estrai il prezzo
+            const priceText = boatCard.querySelector('.boat-price').textContent;
+            const priceMatch = priceText.match(/(\d+(\.\d+)?)/);
+            const priceValue = priceMatch ? parseFloat(priceMatch[0]) : 0; // Assicurati che il prezzo sia valido
+
+            const loanedBoatDetails = {
+                boatId: boatId,
+                userId: userId,
+                name: boatCard.querySelector('.boat-details h2').textContent,
+                price: priceValue, // Salva il prezzo come è
+                imageURL: boatCard.querySelector('.boat-image').src,
+                pickupDateTime: new Date().toISOString(), // Imposta come data attuale
+                returnDateTime: new Date(Date.now() + 3600000).toISOString(), // Imposta data di ritorno in 1 ora
+                numericPrice: priceValue, // Potresti voler includere il prezzo numerico
+                totalPrice: priceValue // Imposta il prezzo totale uguale al prezzo normale
+            };
+
+            // Aggiungi la barca a loanedBoats in localStorage
+            const currentLoanedBoats = JSON.parse(localStorage.getItem('loanedBoats')) || [];
+            currentLoanedBoats.push(loanedBoatDetails);
+            localStorage.setItem('loanedBoats', JSON.stringify(currentLoanedBoats));
+
+            // Reindirizza l'utente alla pagina di riepilogo delle barche noleggiate
+            window.location.href = '../html/summary.html'; // Assicurati che questo percorso sia corretto
+
+        } catch (error) {
+            Swal.fire({
+                title: "Error!",
+                text: `Errore durante il noleggio: ${error.message}`,
+                icon: "error"
+            });
+        }
+    }
+
     function handlePurchase(boatId) {
         try {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -406,12 +448,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const existingItemInCart = cart.find(item => item.boatId === boatId);
             const isInCart = !existingItemInCart;
 
+            // Controllo se la barca è in prestito
             const isLoaned = loanedBoats.some(boat => boat.boatId === boatId);
 
             const now = new Date();
 
             if (isInCart) {
-                const returnDateTime = new Date(existingItemInCart.returnDateTime);
+                const returnDateTime = new Date(existingItemInCart.returnDateTime); // Qui potresti avere `existingItemInCart` undefined
+                console.log(returnDateTime, "returnDateTime");
                 if (returnDateTime < now) {
                     showDateSelectionForm(boatId, 'purchase');
                     return;
@@ -438,7 +482,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             Swal.fire({
                 title: "Error",
-                text: "Errore durante l'acquisto: ${error.message}",
+                text: `Errore durante l'acquisto: ${error.message}`,
                 icon: "error"
             });
         }
@@ -479,7 +523,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
 
-    async function fetchCartItems() {
+    function fetchCartItems() {
         const cartItemsContainer = document.getElementById('cart-items-container');
         const cartTotalElement = document.getElementById('cart-total');
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -494,9 +538,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const itemDetails = document.createElement('div');
             itemDetails.innerHTML = `
-        <h3>${item.name}</h3>
-        <p>${item.price}</p>
-        <img src="${item.imageURL}" alt="${item.name}" class="cart-image">
+         <h3>${item.name}</h3>
+    <p>Prezzo per ora: ${item.numericPrice} EUR</p>
+    <p>Ore prenotate: ${((new Date(item.returnDateTime) - new Date(item.pickupDateTime)) / (1000 * 60 * 60)).toFixed(2)}</p>
+    <p>Prezzo totale: ${item.totalPrice.toFixed(2)} EUR</p>
+    <img src="${item.imageURL}" alt="${item.name}" class="cart-image">
     `;
 
             const removeButton = document.createElement('button');
@@ -514,7 +560,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             cartItem.appendChild(buttonContainer);
 
             cartItemsContainer.appendChild(cartItem);
-            total += item.numericPrice || 0;
+            total += item.totalPrice || 0; // Somma il prezzo totale
         });
 
         cartTotalElement.innerHTML = `
@@ -748,7 +794,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const boatPrice = document.createElement('p');
             boatPrice.className = 'boat-price';
-            boatPrice.textContent = `Prezzo: ${boat.price} EUR`;
+            boatPrice.textContent = `Prezzo: ${boat.price} €/ora`;
 
             const boatPlaces = document.createElement('p');
             boatPlaces.className = 'boat-places';
@@ -772,7 +818,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 // Logica per i pulsanti
                 addToCartButton.addEventListener('click', () => addToCart(boat.id));
-                purchaseButton.addEventListener('click', () => handlePurchase(boat.id));
+                purchaseButton.addEventListener('click', () => handleRent(boat.id)); // Modificato per gestire il noleggio
 
                 boatDetails.appendChild(addToCartButton);
                 boatDetails.appendChild(purchaseButton);
